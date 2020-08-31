@@ -22,7 +22,6 @@ namespace Blazor.Startechmanager.Server.Data
         }
 
 
-        public DbSet<ApplicationUser> Users { get; set; }
         DbSet<PersistedGrant> IPersistedGrantDbContext.PersistedGrants { get; set; }
         DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get; set; }
 
