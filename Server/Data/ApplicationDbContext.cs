@@ -23,8 +23,8 @@ namespace Blazor.Startechmanager.Server.Data
 
 
         public DbSet<ApplicationUser> Users { get; set; }
-        DbSet<PersistedGrant> IPersistedGrantDbContext.PersistedGrants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        DbSet<PersistedGrant> IPersistedGrantDbContext.PersistedGrants { get; set; }
+        DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get; set; }
 
         int IPersistedGrantDbContext.SaveChanges()
         {
