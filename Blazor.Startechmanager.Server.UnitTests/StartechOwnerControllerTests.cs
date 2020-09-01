@@ -1,16 +1,32 @@
-﻿using NUnit.Framework;
+﻿using Blazor.Startechmanager.Server.Controllers;
+using Blazor.Startechmanager.Server.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Moq;
+using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
 {
-    public class StartechOwnerControllerTests : BaseTests
+    public class StartechOwnerControllerTests : BaseTests<StartechOwnerController>
     {
+ 
+        public Mock<UserManager<ApplicationUser>> UserManager { get; set; }
+
         [Test]
         public void Only_admin_can_use_the_controller_for_modifying_admins_rights()
         {
-            throw new NotImplementedException();
+            var user = new ApplicationUser
+            {
+                Roles = new System.Collections.Generic.List<ApplicationRole> { new ApplicationRole { Name = Roles.Admin } }
+            };
+            UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).Returns(Task.Factory.StartNew(() => user));
+
+            var target = Create();
+            
+            
         }
 
         [Test]
