@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Blazor.Startechmanager.Server.Data;
 using Blazor.Startechmanager.Server.Models;
+using System;
 
 namespace Blazor.Startechmanager.Server
 {
@@ -41,7 +42,7 @@ namespace Blazor.Startechmanager.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dbContext)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -75,7 +76,8 @@ namespace Blazor.Startechmanager.Server
 
             if(env.IsDevelopment())
             {
-                SeedDatas.Seed(dbContext);
+              SeedDatas.Seed(app);
+
             }
         }
     }

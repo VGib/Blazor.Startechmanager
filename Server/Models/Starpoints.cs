@@ -12,8 +12,8 @@ namespace Blazor.Startechmanager.Server.Models
         public DateTime Date { get; set; }
         public int NumberOfPoints { get; set; }
 
-        public string UrlJustification { get; set; }
+        public string? UrlJustification { get; set; }
 
-        public string TextJustification { get; set; }
+        public string? TextJustification { get; set; }
     }
 }
