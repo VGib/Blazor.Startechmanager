@@ -39,8 +39,8 @@ namespace Blazor.Startechmanager.Server.Data
                     {
                         Email = "admin@softeam.fr",
                         NormalizedEmail = "ADMIN@SOFTEAM.FR",
-                        UserName = "Admin",
-                        NormalizedUserName = "ADMIN",
+                        UserName = "admin@softeam.fr",
+                        NormalizedUserName = "ADMIN@SOFTEAM.FR",
                         PhoneNumber = "+111111111111",
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
