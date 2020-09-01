@@ -76,7 +76,7 @@ namespace Blazor.Startechmanager.Server
 
             if(env.IsDevelopment())
             {
-              SeedDatas.Seed(app);
+                await SeedDatas.Seed(app);
 
             }
         }
