@@ -33,11 +33,10 @@ namespace Blazor.Startechmanager.Server
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"));
 
-                if(Environment.IsDevelopment())
+                if (Environment.IsDevelopment())
                 {
                     options.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
                 }
-
             });
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -86,10 +85,9 @@ namespace Blazor.Startechmanager.Server
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            if(Environment.IsDevelopment())
+            if (Environment.IsDevelopment())
             {
                 await SeedDatas.Seed(app);
-
             }
         }
     }
