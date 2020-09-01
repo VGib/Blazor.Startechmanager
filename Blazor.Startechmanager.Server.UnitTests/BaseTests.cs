@@ -8,10 +8,8 @@ using System.Security.Authentication.ExtendedProtection;
 
 namespace Blazor.Startechmanager.Server.UnitTests
 {
-
     public class InjectForTestAttribute : Attribute
     {
-
     }
 
     public class BaseTests
@@ -25,7 +23,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
             foreach (var toInjectProperty in this.GetType().GetProperties().Where(x => x.GetCustomAttribute(typeof(InjectForTestAttribute), true) != null))
             {
-                service.AddTransient(s => Substitute.For(new Type[] { toInjectProperty.PropertyType }, new object[0]));
+                service.AddTransient(_ => Substitute.For(new Type[] { toInjectProperty.PropertyType }, new object[0]));
             }
 
             ServiceProvider = service.BuildServiceProvider();
