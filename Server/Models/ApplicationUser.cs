@@ -11,13 +11,17 @@ namespace Blazor.Startechmanager.Server.Models
     {
         public int NumberOfPoints { get; set; }
 
-        public List<MappingStartechUser> Startechs { get; set; }
+        public List<MappingStartechUser> Startechs { get; set; } = new List<MappingStartechUser>();
 
-        public List<ApplicationRole> Roles { get; set; }
+        public List<ApplicationRole> Roles { get; set; } = new List<ApplicationRole>();
+    }
+
+    public static class Roles
+    {
+        public const string Admin = "Admin";
     }
 
     public class ApplicationRole : IdentityRole<int>
     {
-
     }
 }
