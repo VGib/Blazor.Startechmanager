@@ -12,5 +12,6 @@ namespace Blazor.Startechmanager.Server.Models
         public int UserId { get; set; }
 
         public Startechs Startech { get; set; }
+        public bool IsLeader { get; set; }
     }
 }

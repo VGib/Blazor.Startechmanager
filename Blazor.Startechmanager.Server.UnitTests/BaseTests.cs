@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Blazor.Startechmanager.Server.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Blazor.Startechmanager.Server.UnitTests
@@ -12,10 +16,15 @@ namespace Blazor.Startechmanager.Server.UnitTests
     {
         public ServiceProvider ServiceProvider { get; private set; }
 
+        public ServiceCollection ServiceCollection { get; private set; }
+
+        public Mock<ApplicationDbContext> DbContext { get; set; }
+
+
         [SetUp]
         public void SetUp()
         {
-            var service = new ServiceCollection();
+            ServiceCollection = new ServiceCollection();
 
             SetMock();
 
@@ -33,10 +42,9 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 var property = toInjectProperty.PropertyType.GetProperties().Where(x => x.Name == "Object").First();
                 var objectToInvoke = property.GetGetMethod()?.Invoke(toInject, null);
 
-                service.AddTransient(toInjectProperty.PropertyType.GetGenericArguments()[0], _ => objectToInvoke);
+                ServiceCollection.AddTransient(toInjectProperty.PropertyType.GetGenericArguments()[0], _ => objectToInvoke);
             }
-            service.AddTransient<T>();
-            ServiceProvider = service.BuildServiceProvider();
+            ServiceCollection.AddTransient<T>();
         }
 
         protected virtual void SetMock()
@@ -50,9 +58,15 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         public T Create()
         {
-           return  ServiceProvider.GetRequiredService<T>();
+            ServiceProvider = ServiceCollection.BuildServiceProvider();
+            return  ServiceProvider.GetRequiredService<T>();
         }
 
+        public void AddDbSet<T>(Expression<Func<ApplicationDbContext, DbSet<T>>> getDbSet, IEnumerable<T> values) where T : class
+        {
+            var mock = new Mock<DbSet<T>>();
+            mock.Setup(x => x.AsQueryable()).Returns(values.AsQueryable());
+            DbContext.SetupGet(getDbSet).Returns(mock.Object);
+        }
     }
-
 }
