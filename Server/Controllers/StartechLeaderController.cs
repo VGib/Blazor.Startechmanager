@@ -15,8 +15,8 @@ using Microsoft.VisualBasic.CompilerServices;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
-    [Route("{controller}/{startechType}/{action}/{id?:int}")]
-    [Authorize(Roles.Admin)]
+    [Route("{controller}/{startechType}/{action}/{id?}")]
+    [Authorize(Roles = Roles.Admin)]
     [ApiController]
     public class StartechLeaderController : ControllerBase
     {
