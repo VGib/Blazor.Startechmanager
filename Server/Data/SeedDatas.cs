@@ -45,11 +45,11 @@ namespace Blazor.Startechmanager.Server.Data
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
                         SecurityStamp = Guid.NewGuid().ToString("D"),
-                        Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Admin } },
-                        Roles = new List<ApplicationRole> { dbContext.Roles.First() }
+                        Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Admin } }
                     };
 
                     await SetPasswordModel(admin, dbContext);
+                    await AddRole(admin, Roles.Admin, dbContext);
 
                 }
 
@@ -62,6 +62,12 @@ namespace Blazor.Startechmanager.Server.Data
         {
             var roleStore = new RoleStore<ApplicationRole, ApplicationDbContext, int>(dbContext);
             await roleStore.CreateAsync(adminRole);
+        }
+
+        private static async Task AddRole (ApplicationUser user, string role, ApplicationDbContext dbContext)
+        {
+            var userStore = new UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, int>(dbContext);
+            await userStore.AddToRoleAsync(user, role);
         }
 
         private static async Task SetPasswordModel(ApplicationUser user, ApplicationDbContext dbContext)
