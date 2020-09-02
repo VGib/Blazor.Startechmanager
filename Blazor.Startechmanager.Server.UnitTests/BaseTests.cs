@@ -1,13 +1,14 @@
 ﻿using Blazor.Startechmanager.Server.Data;
+using EntityFrameworkCore.Testing.Moq.Helpers;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Blazor.Startechmanager.Server.UnitTests
@@ -18,19 +19,24 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         public ServiceCollection ServiceCollection { get; private set; }
 
-        public Mock<ApplicationDbContext> DbContext { get; set; }
-
+        public ApplicationDbContext DbContext { get; set; }
 
         [SetUp]
         public void SetUp()
         {
             ServiceCollection = new ServiceCollection();
 
+            DbContext = new MockedDbContextBuilder<ApplicationDbContext>().UseConstructorWithParameters(
+                new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options,
+                new OptionsWrapper<OperationalStoreOptions>(new OperationalStoreOptions()))
+                .MockedDbContext;
+            ServiceCollection.AddSingleton(_ => DbContext);
+
             SetMock();
 
             foreach (var toInjectProperty in GetMockProperties())
             {
-                var toInject = toInjectProperty.GetGetMethod()?.Invoke(this,null);
+                var toInject = toInjectProperty.GetGetMethod()?.Invoke(this, null);
 
                 if (toInject == null)
                 {
@@ -53,20 +59,13 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         private IEnumerable<PropertyInfo> GetMockProperties()
         {
-            return this.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType &&  x.PropertyType.GetGenericTypeDefinition() == typeof(Mock<>) && x.CanWrite);
+            return this.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Mock<>) && x.CanWrite);
         }
 
         public T Create()
         {
             ServiceProvider = ServiceCollection.BuildServiceProvider();
-            return  ServiceProvider.GetRequiredService<T>();
-        }
-
-        public void AddDbSet<T>(Expression<Func<ApplicationDbContext, DbSet<T>>> getDbSet, IEnumerable<T> values) where T : class
-        {
-            var mock = new Mock<DbSet<T>>();
-            mock.Setup(x => x.AsQueryable()).Returns(values.AsQueryable());
-            DbContext.SetupGet(getDbSet).Returns(mock.Object);
+            return ServiceProvider.GetRequiredService<T>();
         }
     }
 }

@@ -24,6 +24,11 @@ namespace Blazor.Startechmanager.Server.Controllers
     [ApiController]
     public class StartechLeaderController : ControllerBase
     {
+        public StartechLeaderController(ApplicationDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         public ApplicationDbContext  DbContext { get; set; }
 
 

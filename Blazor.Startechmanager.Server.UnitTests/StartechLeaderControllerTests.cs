@@ -2,6 +2,7 @@
 using Blazor.Startechmanager.Server.Data;
 using Blazor.Startechmanager.Server.Models;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -24,39 +25,42 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         private void PopulateDatas()
         {
-            AddDbSet(x => x.Users, new List<ApplicationUser>
-            {
+            DbContext.Users.Add(
                 new ApplicationUser
                 {
                     UserName = "Admin",
-                    Roles = new List<ApplicationRole> { new ApplicationRole { Name = Roles.Admin} }
-                },
-                new ApplicationUser
-                {
-                    UserName = "Leader java",
-                    Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Java, IsLeader = true } }
-                },
-                new ApplicationUser
-                {
-                    UserName = "Leader dotnet",
-                    Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true } }
-                },
-                  new ApplicationUser
-                {
-                    UserName = "member java",
-                    Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Java, IsLeader = false } }
-                },
-                new ApplicationUser
-                {
-                    UserName = "member dotnet",
-                    Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = false } }
-                },
-                 new ApplicationUser
-                {
-                    UserName = "nothing"
-                 }
-
+                    Roles = new List<ApplicationRole> { new ApplicationRole { Name = Roles.Admin } }
+                });
+            DbContext.Users.Add(
+            new ApplicationUser
+            {
+                UserName = "Leader java",
+                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Java, IsLeader = true } }
             });
+            DbContext.Users.Add(
+            new ApplicationUser
+            {
+                UserName = "Leader dotnet",
+                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true } }
+            });
+            DbContext.Users.Add(
+              new ApplicationUser
+              {
+                  UserName = "member java",
+                  Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Java, IsLeader = false } }
+              });
+            DbContext.Users.Add(
+            new ApplicationUser
+            {
+                UserName = "member dotnet",
+                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = false } }
+            });
+            DbContext.Users.Add(
+             new ApplicationUser
+             {
+                 UserName = "nothing"
+             });
+            DbContext.SaveChanges();
         }
 
         [Test]

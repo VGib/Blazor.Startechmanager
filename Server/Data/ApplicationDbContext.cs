@@ -22,11 +22,6 @@ namespace Blazor.Startechmanager.Server.Data
             _operationalStoreOptions = operationalStoreOptions;
         }
 
-        internal ApplicationDbContext() : base(null)
-        {
-        }
-
-
 #nullable disable
         DbSet<PersistedGrant> IPersistedGrantDbContext.PersistedGrants { get; set; }
         DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get; set; }
