@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Blazor.Startechmanager.Server.Data;
 using Blazor.Startechmanager.Server.Models;
 using Blazor.Startechmanager.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
@@ -17,14 +20,16 @@ namespace Blazor.Startechmanager.Server.Controllers
     [ApiController]
     public class StartechLeaderController : ControllerBase
     {
-        public StartechLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+        public StartechLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, HttpContextAccessor httpContext)
         {
             DbContext = dbContext;
             UserManager = userManager;
+            HttpContextAccessor = httpContext;
         }
 
         public ApplicationDbContext  DbContext { get; set; }
         public UserManager<ApplicationUser> UserManager { get; }
+        public HttpContextAccessor HttpContextAccessor { get; }
 
         [HttpGet]
         public async Task<IList<UserObject>> GetLeaders([FromRoute] string startechType)
@@ -54,6 +59,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             return (Startechs)startechAsObject;
         }
 
+        [HttpGet]
         public async Task<IActionResult> AddLeader([FromRoute] string startechType, [FromRoute] int userId)
         {
             var user = await DbContext.Users.Include(x => x.Startechs).Include(x => x.Roles)
@@ -88,7 +94,44 @@ namespace Blazor.Startechmanager.Server.Controllers
                     DbContext.Entry(startechMapper).Property(x => x.IsLeader).IsModified = true;
                 }
 
-                DbContext.SaveChanges();
+                await DbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveLeader([FromRoute] string startechType, [FromRoute] int userId)
+        {
+            var userToDelete = DbContext.Users.Include(x => x.Startechs).FirstOrDefault(x => x.Id == userId);
+
+            if (userToDelete is null)
+            {
+                return BadRequest("unknow user");
+            }
+
+            if (startechType == Roles.Admin)
+            {
+                if (userId == (await UserManager.GetUserAsync(HttpContextAccessor.HttpContext.User)).Id)
+                {
+                    return BadRequest("you can't delete yourself");
+                }
+
+                await UserManager.RemoveFromRoleAsync(userToDelete, Roles.Admin);
+
+                return Ok();
+            }
+            else
+            {
+                var startech = GetStarttechAsEnum(startechType);
+                var mappingStartechForUser = userToDelete.Startechs.FirstOrDefault(x => x.Startech == startech);
+
+                if(mappingStartechForUser != null)
+                {
+                    mappingStartechForUser.IsLeader = false;
+                    DbContext.Entry(mappingStartechForUser).Property(x => x.IsLeader).IsModified = true;
+                    await DbContext.SaveChangesAsync();
+                }
 
                 return Ok();
             }

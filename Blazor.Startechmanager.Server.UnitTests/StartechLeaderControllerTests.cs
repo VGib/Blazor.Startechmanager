@@ -1,12 +1,16 @@
 ﻿using Blazor.Startechmanager.Server.Controllers;
 using Blazor.Startechmanager.Server.Models;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
@@ -19,6 +23,9 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
             UserManager =  new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
+
+
+            ServiceCollection.AddSingleton(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
         }
 
         [Test]
@@ -51,7 +58,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             {
                 Id = 3,
                 UserName = "Leader dotnet",
-                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true } }
+                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true, UserId = 3} }
             });
             DbContext.Users.Add(
               new ApplicationUser
@@ -117,15 +124,27 @@ namespace Blazor.Startechmanager.Server.UnitTests
         }
 
         [Test]
-        public void when_removing_admin_right_to_a_user_the_removed_right_should_be_saved_in_database()
+        public async Task when_removing_admin_right_to_a_user_the_removed_right_should_be_saved_in_database()
         {
-            throw new NotImplementedException();
+            PopulateDatas();
+            DbContext.Add(new ApplicationUser
+            {
+                Id = 10,
+                UserName = "Admin to remove",
+                Roles = new List<ApplicationRole> { new ApplicationRole { Name = "Admin" } }
+            });
+            DbContext.SaveChanges();
+            UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
+            var target = Create();
+            await target.RemoveLeader(Roles.Admin, 10);
+            UserManager.Verify(x => x.RemoveFromRoleAsync(It.Is<ApplicationUser>(x => x.Id == 10), It.Is<string>(x => x == Roles.Admin)));
         }
 
         [Test]
-        public void their_should_never_be_no_admin_in_the_application()
+        public async Task  their_should_never_be_no_admin_in_the_application()
         {
-            throw new NotImplementedException();
+           await i_cant_remove_my_own_admin_privilege();
         }
 
 
@@ -141,9 +160,27 @@ namespace Blazor.Startechmanager.Server.UnitTests
         }
 
         [Test]
-        public void when_removing_a_startech_leader_right_to_a_user_the_removed_right_should_be_saved_in_database()
+        public async Task when_removing_a_startech_leader_right_to_a_user_the_removed_right_should_be_saved_in_database()
         {
-            throw new NotImplementedException();
+            PopulateDatas();
+            UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
+            var target = Create();
+            await target.RemoveLeader(Startechs.Dotnet.ToString(), 3);
+
+            DbContext.MappingStartechs.First(x => x.Startech == Startechs.Dotnet && x.UserId == 3).IsLeader.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task i_cant_remove_my_own_admin_privilege()
+        {
+            PopulateDatas();
+            UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
+            var target = Create();
+            var result = await target.RemoveLeader(Roles.Admin, 1);
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+            UserManager.Invocations.Any(x => x.Method.Name == nameof(UserManager<ApplicationUser>.RemoveFromRoleAsync)).Should().BeFalse();
         }
 
         [Test]

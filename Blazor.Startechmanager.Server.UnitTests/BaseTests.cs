@@ -1,6 +1,7 @@
 ﻿using Blazor.Startechmanager.Server.Data;
 using EntityFrameworkCore.Testing.Moq.Helpers;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -57,9 +58,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
         }
 
-        public void DiscardDbContextChanges() => DbContext.ChangeTracker.Entries()
-                        .Where(e => e.Entity != null).ToList()
-                        .ForEach(e => e.State = EntityState.Detached);
         private IEnumerable<PropertyInfo> GetMockProperties()
         {
             return this.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Mock<>) && x.CanWrite);
