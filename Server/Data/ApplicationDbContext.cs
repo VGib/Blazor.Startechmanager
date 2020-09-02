@@ -26,6 +26,8 @@ namespace Blazor.Startechmanager.Server.Data
         DbSet<PersistedGrant> IPersistedGrantDbContext.PersistedGrants { get; set; }
         DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get; set; }
 
+        public virtual DbSet<MappingStartechUser> MappingStartechs { get; set; }
+
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => base.SaveChangesAsync();
 
 #nullable enable

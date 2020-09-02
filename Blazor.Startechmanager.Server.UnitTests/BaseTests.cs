@@ -45,7 +45,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                     toInjectProperty.SetValue(this, toInject);
                 }
 
-                var property = toInjectProperty.PropertyType.GetProperties().Where(x => x.Name == "Object").First();
+                var property = toInjectProperty.PropertyType.GetProperties().First(x => x.Name == "Object");
                 var objectToInvoke = property.GetGetMethod()?.Invoke(toInject, null);
 
                 ServiceCollection.AddTransient(toInjectProperty.PropertyType.GetGenericArguments()[0], _ => objectToInvoke);
@@ -57,6 +57,9 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
         }
 
+        public void DiscardDbContextChanges() => DbContext.ChangeTracker.Entries()
+                        .Where(e => e.Entity != null).ToList()
+                        .ForEach(e => e.State = EntityState.Detached);
         private IEnumerable<PropertyInfo> GetMockProperties()
         {
             return this.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Mock<>) && x.CanWrite);
