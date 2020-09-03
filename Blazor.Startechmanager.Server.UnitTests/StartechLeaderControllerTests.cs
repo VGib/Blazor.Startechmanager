@@ -1,5 +1,6 @@
 ﻿using Blazor.Startechmanager.Server.Controllers;
 using Blazor.Startechmanager.Server.Models;
+using Blazor.Startechmanager.Shared.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var store = new Mock<IUserStore<ApplicationUser>>();
             UserManager =  new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
 
-
             ServiceCollection.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
         }
 
@@ -32,6 +32,8 @@ namespace Blazor.Startechmanager.Server.UnitTests
         public async Task when_getting_the_admin_users_all_users_who_can_admin_the_application_should_be_return()
         {
             PopulateDatas();
+            UserManager.Setup(x => x.GetUsersInRoleAsync(Roles.Admin))
+                .Returns(Task.Factory.StartNew<IList<ApplicationUser>>(() => DbContext.Users.Where(x => x.UserName == "Admin").ToList()));
             var target = Create();
             var output = await target.GetLeaders("Admin");
             output.Select(x => x.UserName).Should().BeEquivalentTo("Admin");
@@ -43,8 +45,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 new ApplicationUser
                 {
                     Id = 1,
-                    UserName = "Admin",
-                    UserRoles = new List<ApplicationUserRole> { new ApplicationUserRole { Role = new ApplicationRole { Name = Roles.Admin } } }
+                    UserName = "Admin"
                 });
             DbContext.Users.Add(
             new ApplicationUser
@@ -95,10 +96,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_getting_the_admin_users_all_users_who_can_not_admin_the_application_should_not_be_return()
         {
-            PopulateDatas();
-            var target = Create();
-            var output = await target.GetLeaders("Admin");
-            output.Select(x => x.UserName).Should().BeEquivalentTo("Admin");
+            await when_getting_the_admin_users_all_users_who_can_admin_the_application_should_be_return();
         }
 
         [Test]
@@ -106,7 +104,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             PopulateDatas();
             var target = Create();
-            var output = await target.GetLeaders(Startechs.Dotnet.ToString());
+            var output = await target.GetLeaders(nameof(Startechs.Dotnet));
             output.Select(x => x.UserName).Should().BeEquivalentTo("Leader dotnet");
         }
 
@@ -120,7 +118,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             await target.AddLeader("Admin", 6);
 
             UserManager.Verify(x => x.AddToRoleAsync(It.Is<ApplicationUser>(x => x.UserName == "nothing"), It.Is<string>(x => x == Roles.Admin)));
-
         }
 
         [Test]
@@ -131,7 +128,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             {
                 Id = 10,
                 UserName = "Admin to remove",
-                UserRoles = new List<ApplicationUserRole> { new ApplicationUserRole { Role = new ApplicationRole { Name = Roles.Admin } } }
             });
             DbContext.SaveChanges();
             UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
@@ -147,13 +143,12 @@ namespace Blazor.Startechmanager.Server.UnitTests
            await i_cant_remove_my_own_admin_privilege();
         }
 
-
         [Test]
         public async Task when_adding_a_startech_leader_right_to_a_user_the_right_should_be_saved_in_database()
         {
             PopulateDatas();
             var target = Create();
-            await target.AddLeader(Startechs.Dotnet.ToString(), 6);
+            await target.AddLeader(nameof(Startechs.Dotnet), 6);
 
             DbContext.MappingStartechs.Any(x => x.UserId == 6 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
         }
@@ -165,7 +160,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
                 .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
             var target = Create();
-            await target.RemoveLeader(Startechs.Dotnet.ToString(), 3);
+            await target.RemoveLeader(nameof(Startechs.Dotnet), 3);
 
             DbContext.MappingStartechs.First(x => x.Startech == Startechs.Dotnet && x.UserId == 3).IsLeader.Should().BeFalse();
         }
@@ -192,7 +187,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             await target.AddLeader("Admin", 6);
 
             UserManager.Verify(x => x.AddToRoleAsync(It.Is<ApplicationUser>(x => x.UserName == "nothing"), It.Is<string>(x => x == Roles.Admin)));
-
         }
 
         [Test]
@@ -200,10 +194,9 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             PopulateDatas();
             var target = Create();
-            await target.AddLeader(Startechs.Dotnet.ToString(), 3);
+            await target.AddLeader(nameof(Startechs.Dotnet), 3);
 
             DbContext.MappingStartechs.Count(x => x.UserId == 3 && x.Startech == Startechs.Dotnet).Should().Be(1);
-
         }
 
         [Test]
@@ -211,7 +204,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             PopulateDatas();
             var target = Create();
-            await target.AddLeader(Startechs.Dotnet.ToString(), 5);
+            await target.AddLeader(nameof(Startechs.Dotnet), 5);
 
             DbContext.MappingStartechs.Count(x => x.UserId == 5 && x.Startech == Startechs.Dotnet).Should().Be(1);
             DbContext.MappingStartechs.Any(x => x.UserId == 5 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();

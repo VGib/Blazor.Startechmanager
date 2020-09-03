@@ -12,8 +12,6 @@ namespace Blazor.Startechmanager.Server.Models
         public int NumberOfPoints { get; set; }
 
         public List<MappingStartechUser> Startechs { get; set; } = new List<MappingStartechUser>();
-
-        public List<ApplicationUserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
     }
 
     public static class Roles
@@ -23,14 +21,5 @@ namespace Blazor.Startechmanager.Server.Models
 
     public class ApplicationRole : IdentityRole<int>
     {
-    }
-
-    public class ApplicationUserRole : IdentityUserRole<int>
-    {
-#nullable disable
-        public ApplicationRole Role { get; set; }
-
-        public ApplicationUser User { get; set; }
-#nullable enable
     }
 }

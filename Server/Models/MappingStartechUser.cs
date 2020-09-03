@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Blazor.Startechmanager.Shared.Models;
 
 namespace Blazor.Startechmanager.Server.Models
 {

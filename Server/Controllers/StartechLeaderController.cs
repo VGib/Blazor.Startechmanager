@@ -34,9 +34,8 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             if(startechType == Roles.Admin)
             {
-                return await DbContext.Users.Include(x => x.UserRoles)
-                    .Where(x => x.UserRoles.Any(y => y.Role.Name == Roles.Admin))
-                    .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToListAsync();
+                return (await UserManager.GetUsersInRoleAsync(Roles.Admin))
+                        .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToList();
             }
             else
             {
