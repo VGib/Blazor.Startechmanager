@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
-    [Route("{controller}/{startechType}/{action}/{id?}")]
+    [Route("{controller}/{startechType}/{action}/{userId:int?}")]
     [Authorize(Policy = Roles.Admin)]
     [ApiController]
     public class StartechLeaderController : ControllerBase

@@ -1,9 +1,10 @@
 ﻿<div class="card">
     <h1>@DisplayName</h1>
+    <p>List of all @DisplayName</p>
     <ul class="list-group">
         @foreach(var user in Leaders)
         {
-            <li class="list-group">@user.UserName</li>
+            <li class="list-group"><div class="d-flex flew-row"/><div class="col-auto"><span class="oi oi-person" style="margin-right: 8px"/><span>@user.UserName</span><button style="margin-left:12px; color: red;" class="oi oi-circle-x btn" @onclick="@(() => OnRemove(user))" /></div></li>
         }
     </ul>
 </div>

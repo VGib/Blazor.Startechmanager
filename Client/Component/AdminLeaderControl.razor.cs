@@ -24,6 +24,15 @@ namespace Blazor.Startechmanager.Client.Component
 
         public List<UserObject> Leaders { get; set; } = new List<UserObject>();
 
+        public async Task OnRemove(UserObject user)
+        {
+            if( !(await HttpClient.GetAsync($"StartechLeader/{StartechType}/RemoveLeader/{user.Id}"))?.IsSuccessStatusCode ?? false)
+            {
+                throw new NotImplementedException("to do");
+            }
+            LoadClients();
+        }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();

@@ -1,2 +1,6 @@
 ﻿@page "/leaders"
 <AdminLeaderControl DisplayName="Adminstrators" StartechType="Admin" />
+@foreach(Startechs startechs in Enum.GetValues(typeof(Startechs)))
+{
+    <AdminLeaderControl DisplayName="@(startechs.ToString() + " Leaders")" StartechType="@startechs.ToString()" />
+}
