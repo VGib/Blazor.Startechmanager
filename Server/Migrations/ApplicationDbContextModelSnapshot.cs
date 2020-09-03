@@ -125,16 +125,13 @@ namespace Blazor.Startechmanager.Server.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApplicationUserId")
+                    b.Property<int>("ApplicationUserId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsLeader")
                         .HasColumnType("bit");
 
                     b.Property<int>("Startech")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -301,17 +298,11 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<int>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -333,28 +324,13 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Blazor.Startechmanager.Server.Models.ApplicationUserRole", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<int>");
-
-                    b.Property<int?>("RoleId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasDiscriminator().HasValue("ApplicationUserRole");
-                });
-
             modelBuilder.Entity("Blazor.Startechmanager.Server.Models.MappingStartechUser", b =>
                 {
                     b.HasOne("Blazor.Startechmanager.Server.Models.ApplicationUser", null)
                         .WithMany("Startechs")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -406,17 +382,6 @@ namespace Blazor.Startechmanager.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Blazor.Startechmanager.Server.Models.ApplicationUserRole", b =>
-                {
-                    b.HasOne("Blazor.Startechmanager.Server.Models.ApplicationRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId1");
-
-                    b.HasOne("Blazor.Startechmanager.Server.Models.ApplicationUser", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }

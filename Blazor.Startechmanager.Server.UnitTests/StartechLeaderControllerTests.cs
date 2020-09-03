@@ -59,7 +59,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             {
                 Id = 3,
                 UserName = "Leader dotnet",
-                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true, UserId = 3} }
+                Startechs = new List<MappingStartechUser> { new MappingStartechUser { Startech = Startechs.Dotnet, IsLeader = true, ApplicationUserId = 3} }
             });
             DbContext.Users.Add(
               new ApplicationUser
@@ -150,7 +150,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 6);
 
-            DbContext.MappingStartechs.Any(x => x.UserId == 6 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
+            DbContext.MappingStartechs.Any(x => x.ApplicationUserId == 6 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.RemoveLeader(nameof(Startechs.Dotnet), 3);
 
-            DbContext.MappingStartechs.First(x => x.Startech == Startechs.Dotnet && x.UserId == 3).IsLeader.Should().BeFalse();
+            DbContext.MappingStartechs.First(x => x.Startech == Startechs.Dotnet && x.ApplicationUserId == 3).IsLeader.Should().BeFalse();
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 3);
 
-            DbContext.MappingStartechs.Count(x => x.UserId == 3 && x.Startech == Startechs.Dotnet).Should().Be(1);
+            DbContext.MappingStartechs.Count(x => x.ApplicationUserId == 3 && x.Startech == Startechs.Dotnet).Should().Be(1);
         }
 
         [Test]
@@ -206,8 +206,8 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 5);
 
-            DbContext.MappingStartechs.Count(x => x.UserId == 5 && x.Startech == Startechs.Dotnet).Should().Be(1);
-            DbContext.MappingStartechs.Any(x => x.UserId == 5 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
+            DbContext.MappingStartechs.Count(x => x.ApplicationUserId == 5 && x.Startech == Startechs.Dotnet).Should().Be(1);
+            DbContext.MappingStartechs.Any(x => x.ApplicationUserId == 5 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
         }
     }
 }

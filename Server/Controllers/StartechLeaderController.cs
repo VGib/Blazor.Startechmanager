@@ -82,7 +82,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                     {
                         IsLeader = true,
                         Startech = startech,
-                        UserId = user.Id
+                        ApplicationUserId = user.Id
                     };
 
                     DbContext.MappingStartechs.Add(startechMapper);
