@@ -155,7 +155,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(Startechs.Dotnet.ToString(), 6);
 
-            DiscardDbContextChanges();
             DbContext.MappingStartechs.Any(x => x.UserId == 6 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
         }
 
@@ -203,7 +202,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(Startechs.Dotnet.ToString(), 3);
 
-            DiscardDbContextChanges();
             DbContext.MappingStartechs.Count(x => x.UserId == 3 && x.Startech == Startechs.Dotnet).Should().Be(1);
 
         }
@@ -215,7 +213,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             await target.AddLeader(Startechs.Dotnet.ToString(), 5);
 
-            DiscardDbContextChanges();
             DbContext.MappingStartechs.Count(x => x.UserId == 5 && x.Startech == Startechs.Dotnet).Should().Be(1);
             DbContext.MappingStartechs.Any(x => x.UserId == 5 && x.Startech == Startechs.Dotnet && x.IsLeader).Should().BeTrue();
         }
