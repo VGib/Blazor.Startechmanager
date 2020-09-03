@@ -152,20 +152,21 @@ namespace Blazor.Startechmanager.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MappingStartechUser",
+                name: "MappingStartechs",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
                     Startech = table.Column<int>(nullable: false),
+                    IsLeader = table.Column<bool>(nullable: false),
                     ApplicationUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MappingStartechUser", x => x.Id);
+                    table.PrimaryKey("PK_MappingStartechs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MappingStartechUser_AspNetUsers_ApplicationUserId",
+                        name: "FK_MappingStartechs_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -273,8 +274,8 @@ namespace Blazor.Startechmanager.Server.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MappingStartechUser_ApplicationUserId",
-                table: "MappingStartechUser",
+                name: "IX_MappingStartechs_ApplicationUserId",
+                table: "MappingStartechs",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
@@ -309,7 +310,7 @@ namespace Blazor.Startechmanager.Server.Migrations
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
-                name: "MappingStartechUser");
+                name: "MappingStartechs");
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");

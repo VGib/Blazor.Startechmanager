@@ -25,7 +25,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             UserManager =  new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
 
 
-            ServiceCollection.AddSingleton(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
+            ServiceCollection.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
         }
 
         [Test]

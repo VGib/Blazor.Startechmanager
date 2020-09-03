@@ -9,6 +9,7 @@ using Blazor.Startechmanager.Server.Data;
 using Blazor.Startechmanager.Server.Models;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace Blazor.Startechmanager.Server
 {
@@ -40,6 +41,7 @@ namespace Blazor.Startechmanager.Server
             });
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()

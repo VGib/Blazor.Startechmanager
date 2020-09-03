@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blazor.Startechmanager.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200831191011_InitialCreate")]
+    [Migration("20200902164906_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,6 +135,9 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.Property<int?>("ApplicationUserId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsLeader")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Startech")
                         .HasColumnType("int");
 
@@ -145,7 +148,7 @@ namespace Blazor.Startechmanager.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("MappingStartechUser");
+                    b.ToTable("MappingStartechs");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>

@@ -133,6 +133,9 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.Property<int?>("ApplicationUserId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsLeader")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Startech")
                         .HasColumnType("int");
 
@@ -143,7 +146,7 @@ namespace Blazor.Startechmanager.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("MappingStartechUser");
+                    b.ToTable("MappingStartechs");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
