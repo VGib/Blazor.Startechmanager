@@ -25,7 +25,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             HttpContextAccessor = httpContext;
         }
 
-        public ApplicationDbContext  DbContext { get; set; }
+        public ApplicationDbContext DbContext { get; set; }
         public UserManager<ApplicationUser> UserManager { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
@@ -34,8 +34,8 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             if(startechType == Roles.Admin)
             {
-                return await DbContext.Users.Include(x => x.Roles)
-                    .Where(x => x.Roles.Any(y => y.Name == Roles.Admin))
+                return await DbContext.Users.Include(x => x.UserRoles)
+                    .Where(x => x.UserRoles.Any(y => y.Role.Name == Roles.Admin))
                     .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToListAsync();
             }
             else
@@ -62,7 +62,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> AddLeader([FromRoute] string startechType, [FromRoute] int userId)
         {
-            var user = await DbContext.Users.Include(x => x.Startechs).Include(x => x.Roles)
+            var user = await DbContext.Users.Include(x => x.Startechs)
                             .FirstOrDefaultAsync(x => x.Id == userId);
 
             if(startechType == Roles.Admin)

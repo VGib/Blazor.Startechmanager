@@ -44,7 +44,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 {
                     Id = 1,
                     UserName = "Admin",
-                    Roles = new List<ApplicationRole> { new ApplicationRole { Name = Roles.Admin } }
+                    UserRoles = new List<ApplicationUserRole> { new ApplicationUserRole { Role = new ApplicationRole { Name = Roles.Admin } } }
                 });
             DbContext.Users.Add(
             new ApplicationUser
@@ -131,7 +131,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             {
                 Id = 10,
                 UserName = "Admin to remove",
-                Roles = new List<ApplicationRole> { new ApplicationRole { Name = "Admin" } }
+                UserRoles = new List<ApplicationUserRole> { new ApplicationUserRole { Role = new ApplicationRole { Name = Roles.Admin } } }
             });
             DbContext.SaveChanges();
             UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
