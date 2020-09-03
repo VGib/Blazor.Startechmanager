@@ -49,6 +49,10 @@ namespace Blazor.Startechmanager.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy(Roles.Admin, config => config.RequireRole(Roles.Admin));
+            });
 
             services.AddControllersWithViews();
             services.AddRazorPages();
