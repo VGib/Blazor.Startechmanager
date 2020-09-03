@@ -10,6 +10,7 @@ using Blazor.Startechmanager.Server.Models;
 using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blazor.Startechmanager.Server
 {
@@ -40,19 +41,21 @@ namespace Blazor.Startechmanager.Server
                 }
             });
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            // erorr with roles: https://github.com/aspnet/Identity/issues/1813
+            //services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddRoles<ApplicationRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultUI()
+            .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            services.AddAuthorization(option =>
-            {
-                option.AddPolicy(Roles.Admin, config => config.RequireRole(Roles.Admin));
-            });
+            services.AddAuthorization(option => option.AddPolicy(Roles.Admin, config => config.RequireRole(Roles.Admin)));
 
             services.AddControllersWithViews();
             services.AddRazorPages();

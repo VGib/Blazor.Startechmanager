@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Startechmanager.Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Startechmanager.Shared", "Shared\Blazor.Startechmanager.Shared.csproj", "{16050DA8-CD53-476D-BC90-88DF785C0889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Startechmanager.Server.UnitTests", "Blazor.Startechmanager.Server.UnitTests\Blazor.Startechmanager.Server.UnitTests.csproj", "{516C3742-BE85-40BD-9588-293AF389DB8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Startechmanager.Server.UnitTests", "Blazor.Startechmanager.Server.UnitTests\Blazor.Startechmanager.Server.UnitTests.csproj", "{516C3742-BE85-40BD-9588-293AF389DB8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

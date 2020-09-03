@@ -1,0 +1,9 @@
+﻿<div class="card">
+    <h1>@DisplayName</h1>
+    <ul class="list-group">
+        @foreach(var user in Leaders)
+        {
+            <li class="list-group">@user.UserName</li>
+        }
+    </ul>
+</div>

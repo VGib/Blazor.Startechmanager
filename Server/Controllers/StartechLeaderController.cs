@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Blazor.Startechmanager.Server.Data;
 using Blazor.Startechmanager.Server.Models;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
@@ -20,7 +18,7 @@ namespace Blazor.Startechmanager.Server.Controllers
     [ApiController]
     public class StartechLeaderController : ControllerBase
     {
-        public StartechLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, HttpContextAccessor httpContext)
+        public StartechLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext)
         {
             DbContext = dbContext;
             UserManager = userManager;
@@ -29,7 +27,7 @@ namespace Blazor.Startechmanager.Server.Controllers
 
         public ApplicationDbContext  DbContext { get; set; }
         public UserManager<ApplicationUser> UserManager { get; }
-        public HttpContextAccessor HttpContextAccessor { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         [HttpGet]
         public async Task<IList<UserObject>> GetLeaders([FromRoute] string startechType)
@@ -56,7 +54,9 @@ namespace Blazor.Startechmanager.Server.Controllers
                 throw new ArgumentException("unknow startech type");
             }
 
+#pragma warning disable CS8605 // Unboxing a possibly null value.
             return (Startechs)startechAsObject;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
         }
 
         [HttpGet]
