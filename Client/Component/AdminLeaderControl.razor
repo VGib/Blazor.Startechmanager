@@ -1,10 +1,23 @@
-﻿<div class="card" style="padding: 25px; margin-bottom: 35px;">
+﻿@using Blazored.Typeahead
+<div class="card" style="padding: 25px; margin-bottom: 35px;">
     <h1>@DisplayName</h1>
+    <BlazoredTypeahead SearchMethod="SearchUser" Debounce="200" @bind-Value="UserObjectToAdd" >
+        <SelectedTemplate>
+            @context.UserName
+        </SelectedTemplate>
+        <ResultTemplate>
+            @context.UserName
+        </ResultTemplate>
+        <NotFoundTemplate>
+            Sorry no result
+        </NotFoundTemplate>
+    </BlazoredTypeahead>
+    <button @onclick="AddUser" >Add @DisplayName</button>
     <p>List of all @DisplayName</p>
     <ul class="list-group">
-        @foreach(var user in Leaders)
+        @foreach (var user in Leaders)
         {
-            <li class="list-group"><div class="d-flex flew-row"/><div class="col-auto"><span class="oi oi-person" style="margin-right: 8px"/><span>@user.UserName</span><button style="margin-left:12px; color: red;" class="oi oi-circle-x btn" @onclick="@(() => OnRemove(user))" /></div></li>
+            <li class="list-group"><div class="d-flex flew-row" /><div class="col-auto"><span class="oi oi-person" style="margin-right: 8px" /><span>@user.UserName</span><button style="margin-left:12px; color: red;" class="oi oi-circle-x btn" @onclick="@(() => OnRemove(user))" /></div></li>
         }
     </ul>
 </div>

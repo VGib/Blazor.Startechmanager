@@ -21,7 +21,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         public ApplicationDbContext DbContext { get; set; }
 
         [HttpPost("SearchUser")]
-        public async Task<IList<UserObject>> Search(string userToSearch)
+        public async Task<IList<UserObject>> Search([FromBody] string userToSearch)
         {
             if(userToSearch?.Length < 3)
             {

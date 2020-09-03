@@ -74,7 +74,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             {
                 var startech = GetStarttechAsEnum(startechType);
 
-                var startechMapper = user.Startechs.Find(x => x.Startech == startech && x.UserId == userId);
+                var startechMapper = user.Startechs.Find(x => x.Startech == startech);
 
                 if(startechMapper is null)
                 {

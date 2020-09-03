@@ -39,6 +39,7 @@ namespace Blazor.Startechmanager.Server.Data
                     await AddAdmin(dbContext);
                     await AddStartechLeaders(dbContext);
                     await AddStartechMembers(dbContext);
+                    await AddUsers(dbContext);
                 }
 
                 dbContext.SaveChanges();

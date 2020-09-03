@@ -22,11 +22,18 @@ namespace Blazor.Startechmanager.Client.Component
         public HttpClient HttpClient { get; set; }
 #nullable enable
 
+        public UserObject? UserObjectToAdd { get; set; }
+
         public List<UserObject> Leaders { get; set; } = new List<UserObject>();
 
         public async Task OnRemove(UserObject user)
         {
-            if( !(await HttpClient.GetAsync($"StartechLeader/{StartechType}/RemoveLeader/{user.Id}"))?.IsSuccessStatusCode ?? false)
+            await DoAction($"StartechLeader/{StartechType}/RemoveLeader/{user.Id}");
+        }
+
+        private async Task DoAction(string action)
+        {
+            if (!(await HttpClient.GetAsync(action))?.IsSuccessStatusCode ?? false)
             {
                 throw new NotImplementedException("to do");
             }
@@ -49,6 +56,26 @@ namespace Blazor.Startechmanager.Client.Component
                 InvokeAsync(StateHasChanged);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
+        }
+
+        public async Task<IEnumerable<UserObject>> SearchUser(string searchText)
+        {
+            var result = await HttpClient.PostAsJsonAsync<string>("SearchUser", searchText);
+            if(!result.IsSuccessStatusCode)
+            {
+                return Array.Empty<UserObject>();
+            }
+
+            return await result.Content.ReadFromJsonAsync<IList<UserObject>>();
+        }
+
+        public async Task AddUser()
+        {
+            if( UserObjectToAdd is null)
+            {
+                return;
+            }
+            await DoAction($"StartechLeader/{StartechType}/AddLeader/{UserObjectToAdd.Id}");
         }
     }
 }
