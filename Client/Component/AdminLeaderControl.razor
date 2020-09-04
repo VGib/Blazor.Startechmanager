@@ -19,7 +19,7 @@
     <ul class="list-group">
         @foreach (var user in Leaders)
         {
-            <li class="list-group"><div class="d-flex flew-row" /><div class="w-100"><span class="oi oi-person mr-2" /><span>@user.UserName</span><button  style="color: red;" class="oi oi-circle-x btn" @onclick="@(() => OnRemove(user))" /></div></li>
+            <li class="list-group"><div class="d-flex flew-row mb-2" /><div class="w-100"><span class="oi oi-person mr-2" /><span>@user.UserName</span><button  style="color: red;" class="oi oi-circle-x btn" @onclick="@(() => OnRemove(user))" /></div></li>
         }
     </ul>
 </div>
