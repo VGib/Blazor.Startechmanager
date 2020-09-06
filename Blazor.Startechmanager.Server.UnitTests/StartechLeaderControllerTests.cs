@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
 {
-    public class StartechLeaderControllerTests : BaseTests<StartechLeaderController>
+    public class StartechLeaderControllerTests : BaseTestsWithDbContext<StartechLeaderController>
     {
         public Mock<UserManager<ApplicationUser>> UserManager { get; set; }
 
@@ -31,7 +31,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_getting_the_admin_users_all_users_who_can_admin_the_application_should_be_return()
         {
-            PopulateDatas();
             UserManager.Setup(x => x.GetUsersInRoleAsync(Roles.Admin))
                 .Returns(Task.Factory.StartNew<IList<ApplicationUser>>(() => DbContext.Users.Where(x => x.UserName == "Admin").ToList()));
             var target = Create();
@@ -39,7 +38,8 @@ namespace Blazor.Startechmanager.Server.UnitTests
             output.Select(x => x.UserName).Should().BeEquivalentTo("Admin");
         }
 
-        private void PopulateDatas()
+        [SetUp]
+        public void PopulateDatas()
         {
             DbContext.Users.Add(
                 new ApplicationUser
@@ -87,7 +87,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_getting_the_startechs_users_all_users_who_are_startech_leader_should_be_return()
         {
-            PopulateDatas();
             var target = Create();
             var output = await target.GetLeaders(Startechs.Dotnet.ToString());
             output.Select(x => x.UserName).Should().BeEquivalentTo("Leader dotnet");
@@ -102,7 +101,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_getting_the_startechs_users_all_users_who_are_not_startech_leader_should_not_be_return()
         {
-            PopulateDatas();
             var target = Create();
             var output = await target.GetLeaders(nameof(Startechs.Dotnet));
             output.Select(x => x.UserName).Should().BeEquivalentTo("Leader dotnet");
@@ -110,8 +108,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         [Test]
         public async Task when_adding_admin_right_to_a_user_the_right_should_be_saved_in_database()
-        {
-            PopulateDatas();
+        { 
             UserManager.Setup(x => x.AddToRoleAsync(It.Is<ApplicationUser>(x => x.UserName == "nothing"), It.Is<string>(x => x == Roles.Admin)))
             .Returns(Task.Factory.StartNew(() => new IdentityResult()));
             var target = Create();
@@ -123,7 +120,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_removing_admin_right_to_a_user_the_removed_right_should_be_saved_in_database()
         {
-            PopulateDatas();
             DbContext.Add(new ApplicationUser
             {
                 Id = 10,
@@ -146,7 +142,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_adding_a_startech_leader_right_to_a_user_the_right_should_be_saved_in_database()
         {
-            PopulateDatas();
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 6);
 
@@ -156,7 +151,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_removing_a_startech_leader_right_to_a_user_the_removed_right_should_be_saved_in_database()
         {
-            PopulateDatas();
             UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
                 .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
             var target = Create();
@@ -168,7 +162,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task i_cant_remove_my_own_admin_privilege()
         {
-            PopulateDatas();
             UserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
                 .Returns(() => Task.Factory.StartNew(() => DbContext.Users.First(x => x.Id == 1)));
             var target = Create();
@@ -180,7 +173,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task when_adding_admin_right_a_user_should_not_be_added_twice()
         {
-            PopulateDatas();
             UserManager.Setup(x => x.AddToRoleAsync(It.Is<ApplicationUser>(x => x.UserName == "nothing"), It.Is<string>(x => x == Roles.Admin)))
             .Returns(Task.Factory.StartNew(() => new IdentityResult()));
             var target = Create();
@@ -192,7 +184,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task  when_adding_a_star_tech_leader_right_a_user_should_not_be_added_twice()
         {
-            PopulateDatas();
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 3);
 
@@ -202,7 +193,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
         [Test]
         public async Task a_startech_member_can_be_upgrader_to_startech_leader()
         {
-            PopulateDatas();
             var target = Create();
             await target.AddLeader(nameof(Startechs.Dotnet), 5);
 

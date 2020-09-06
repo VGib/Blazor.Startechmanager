@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.UnitTests\Common.UnitTests.csproj" />
     <ProjectReference Include="..\Server\Blazor.Startechmanager.Server.csproj" />
   </ItemGroup>
 

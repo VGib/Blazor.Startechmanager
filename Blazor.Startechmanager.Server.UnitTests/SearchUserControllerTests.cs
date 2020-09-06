@@ -1,6 +1,7 @@
 ﻿using Blazor.Startechmanager.Server.Controllers;
 using Blazor.Startechmanager.Server.Models;
 using FluentAssertions;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
 {
-    public class SearchUserControllerTests : BaseTests<SearchUserController>
+    public class SearchUserControllerTests : BaseTestsWithDbContext<SearchUserController>
     {
+        [SetUp]
         public void PopulateDatas()
         {
             for(int n = 0; n < 15; ++n)
@@ -18,7 +20,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 DbContext.Users.Add(new ApplicationUser
                 {
                     Id = 100 + n,
-                    UserName = $"test_abc_{n}"
+                    UserName = $"test_ndqshjqs_{n}"
                 });
             }
 
@@ -40,13 +42,14 @@ namespace Blazor.Startechmanager.Server.UnitTests
             });
             DbContext.Users.Add(new ApplicationUser
             {
-                Id = 3,
+                Id = 4,
                 UserName = "youpladefghil"
             });
 
             DbContext.SaveChanges();
         }
 
+        [Test]
         public async Task should_not_return_a_user_if_their_is_less_than_3_characters()
         {
             var target = Create();
@@ -54,6 +57,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             result.Should().BeEmpty();
         }
 
+        [Test]
         public async Task should_return_the_user_who_match_the_like_pattern()
         {
             var target = Create();
@@ -61,8 +65,9 @@ namespace Blazor.Startechmanager.Server.UnitTests
             result.Select(x => x.UserName).Should().BeEquivalentTo("totoabctiti", "abctutu", "zozototoabc");
         }
 
+        [Test]
         public async Task should_return_a_least_10_values()
-        {
+        { 
             var target = Create();
             var result = await target.Search("test");
             result.Should().HaveCount(10);

@@ -1,10 +1,4 @@
-﻿using Blazor.Startechmanager.Server.Data;
-using EntityFrameworkCore.Testing.Moq.Helpers;
-using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -12,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Blazor.Startechmanager.Server.UnitTests
+namespace Common.UnitTests
 {
     public class BaseTests<T> where T : class
     {
@@ -20,18 +14,10 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         public ServiceCollection ServiceCollection { get; private set; }
 
-        public ApplicationDbContext DbContext { get; set; }
-
         [SetUp]
         public void SetUp()
         {
             ServiceCollection = new ServiceCollection();
-
-            DbContext = new MockedDbContextBuilder<ApplicationDbContext>().UseConstructorWithParameters(
-                new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options,
-                new OptionsWrapper<OperationalStoreOptions>(new OperationalStoreOptions()))
-                .MockedDbContext;
-            ServiceCollection.AddSingleton(_ => DbContext);
 
             SetMock();
 
