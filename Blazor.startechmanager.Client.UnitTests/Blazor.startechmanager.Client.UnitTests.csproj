@@ -1,7 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="bunit.core" Version="1.0.0-beta-9" />
+    <PackageReference Include="bunit.web" Version="1.0.0-beta-9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.1" />
+    <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Client\Blazor.Startechmanager.Client.csproj" />
+    <ProjectReference Include="..\Common.UnitTests\Common.UnitTests.csproj" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
 
 </Project>
