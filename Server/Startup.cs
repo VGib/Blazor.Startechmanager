@@ -11,9 +11,30 @@ using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
+using System.Threading.Tasks;
+using IdentityModel;
 
 namespace Blazor.Startechmanager.Server
 {
+    // Problem for remoting role in Blazor
+    // https://github.com/dotnet/AspNetCore.Docs/issues/17649
+    public class SendClaimsToBlazorClientProfileService : IProfileService
+    {
+        public Task GetProfileDataAsync(ProfileDataRequestContext context)
+        {
+            var roleClaims = context.Subject.FindAll(JwtClaimTypes.Role);
+            context.IssuedClaims.AddRange(roleClaims);
+            return Task.CompletedTask;
+        }
+
+        public Task IsActiveAsync(IsActiveContext context)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
@@ -60,6 +81,10 @@ namespace Blazor.Startechmanager.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddHttpContextAccessor();
+
+            // Problem for remoting role in Blazor
+            // https://github.com/dotnet/AspNetCore.Docs/issues/17649
+            services.AddTransient<IProfileService, SendClaimsToBlazorClientProfileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
