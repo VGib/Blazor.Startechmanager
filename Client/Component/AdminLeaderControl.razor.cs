@@ -1,5 +1,7 @@
-﻿using Blazor.Startechmanager.Shared.Models;
+﻿using Blazor.Startechmanager.Client.Services;
+using Blazor.Startechmanager.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,10 @@ namespace Blazor.Startechmanager.Client.Component
 
         [Inject]
         public HttpClient HttpClient { get; set; }
+
+        [Inject]
+        public IMessageDisplayer  MessageDisplayer { get; set; }
+
 #nullable enable
 
         public UserObject? UserObjectToAdd { get; set; }
@@ -33,9 +39,10 @@ namespace Blazor.Startechmanager.Client.Component
 
         private async Task DoAction(string action)
         {
-            if (!(await HttpClient.GetAsync(action))?.IsSuccessStatusCode ?? false)
+            var result = await HttpClient.GetAsync(action);
+            if (!result?.IsSuccessStatusCode ?? false)
             {
-                throw new NotImplementedException("to do");
+                await MessageDisplayer.Display("something occurs", $"an error occured: {await result.Content.ReadAsStringAsync()}");
             }
             LoadClients();
         }
@@ -71,7 +78,7 @@ namespace Blazor.Startechmanager.Client.Component
 
         public async Task AddUser()
         {
-            if( UserObjectToAdd is null)
+            if ( UserObjectToAdd is null)
             {
                 return;
             }

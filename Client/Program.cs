@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Policies;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -23,6 +24,9 @@ namespace Blazor.Startechmanager.Client
 
             builder.Services.AddApiAuthorization();
             builder.Services.AddAuthorizationCore(configure => configure.AddAppicationPolicies());
+
+            builder.Services.AddSingleton<IMessageDisplayer, MessageDisplayer>();
+
             await builder.Build().RunAsync();
         }
     }
