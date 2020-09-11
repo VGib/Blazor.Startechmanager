@@ -15,6 +15,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using System.Threading.Tasks;
 using IdentityModel;
+using Blazor.Startechmanager.Shared.Policies;
 
 namespace Blazor.Startechmanager.Server
 {
@@ -76,7 +77,7 @@ namespace Blazor.Startechmanager.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            services.AddAuthorization(option => option.AddPolicy(Roles.Admin, config => config.RequireRole(Roles.Admin)));
+            services.AddAuthorization(option => option.AddAppicationPolicies());
 
             services.AddControllersWithViews();
             services.AddRazorPages();

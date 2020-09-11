@@ -14,11 +14,6 @@ namespace Blazor.Startechmanager.Server.Models
         public List<MappingStartechUser> Startechs { get; set; } = new List<MappingStartechUser>();
     }
 
-    public static class Roles
-    {
-        public const string Admin = "Admin";
-    }
-
     public class ApplicationRole : IdentityRole<int>
     {
     }

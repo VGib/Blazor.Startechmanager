@@ -1,13 +1,14 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazor.Startechmanager.Shared.Policies;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazor.Startechmanager.Client
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
@@ -21,7 +22,7 @@ namespace Blazor.Startechmanager.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Blazor.Startechmanager.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
-            builder.Services.AddAuthorizationCore(configure => configure.AddPolicy("Admin", policy => policy.RequireRole("Admin")));
+            builder.Services.AddAuthorizationCore(configure => configure.AddAppicationPolicies());
             await builder.Build().RunAsync();
         }
     }
