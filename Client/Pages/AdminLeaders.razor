@@ -1,5 +1,5 @@
 ﻿@page "/leaders"
-@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = "Admin")]
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = Roles.Admin)]
         <div class="alert alert-secondary" style="margin-bottom: 35px;">This page allow you to setup the application Administrators and startech leaders. Please use the autocomplete to add right to a user, and click on suppress button to remove rith to a user</div>
         <AdminLeaderControl DisplayName="Adminstrators" StartechType="Admin" />
         @foreach (Startechs startechs in Enum.GetValues(typeof(Startechs)))

@@ -9,11 +9,13 @@
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true">My points</span> 
+                <span class="oi oi-home mr-2" aria-hidden="true" />My points 
             </NavLink>
-            <NavLink class="nav-link" href="/leaders" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true">Set up leaders</span>
-            </NavLink>
+            <AuthorizeView Policy="@Roles.Admin">
+                <NavLink class="nav-link" href="/leaders" Match="NavLinkMatch.All">
+                    <span class="oi oi-people mr-2" aria-hidden="true"/>Set up leaders
+                </NavLink>
+            </AuthorizeView>
         </li>
     </ul>
 </div>
