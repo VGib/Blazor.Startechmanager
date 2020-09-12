@@ -1,8 +1,10 @@
 ﻿using AngleSharp.Dom;
 using Blazor.Startechmanager.Client.Component;
+using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Models;
 using Bunit;
 using Bunit.Rendering;
+using Moq;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using System;
@@ -24,6 +26,8 @@ namespace Blazor.startechmanager.Client.UnitTests
         public ComponentParameter DisplayName { get; } = ComponentParameterFactory.Parameter(nameof(AdminLeaderControl.DisplayName), "Administrator");
 
         public IEnumerable<UserObject> Users { get; } = new[] { new UserObject { UserName = "Admin", Id =  1 } };
+
+        public Mock<IMessageDisplayer>  MessageDisplayer { get; set; }
 
 
         [Test]
