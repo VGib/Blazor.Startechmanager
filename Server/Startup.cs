@@ -16,25 +16,10 @@ using IdentityServer4.Services;
 using System.Threading.Tasks;
 using IdentityModel;
 using Blazor.Startechmanager.Shared.Policies;
+using Blazor.Startechmanager.Server.Services;
 
 namespace Blazor.Startechmanager.Server
 {
-    // Problem for remoting role in Blazor
-    // https://github.com/dotnet/AspNetCore.Docs/issues/17649
-    public class SendClaimsToBlazorClientProfileService : IProfileService
-    {
-        public Task GetProfileDataAsync(ProfileDataRequestContext context)
-        {
-            var roleClaims = context.Subject.FindAll(JwtClaimTypes.Role);
-            context.IssuedClaims.AddRange(roleClaims);
-            return Task.CompletedTask;
-        }
-
-        public Task IsActiveAsync(IsActiveContext context)
-        {
-            return Task.CompletedTask;
-        }
-    }
 
     public class Startup
     {
@@ -63,6 +48,7 @@ namespace Blazor.Startechmanager.Server
                 }
             });
 
+
             // erorr with roles: https://github.com/aspnet/Identity/issues/1813
             //services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
             //    .AddRoles<ApplicationRole>()
@@ -70,7 +56,8 @@ namespace Blazor.Startechmanager.Server
             services.AddIdentity<ApplicationUser, ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultUI()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddClaimsPrincipalFactory<ApplicationUserClaimFactory>();
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
@@ -82,6 +69,8 @@ namespace Blazor.Startechmanager.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddHttpContextAccessor();
+
+            services.AddStartechPoliciesHandler();
 
             // Problem for remoting role in Blazor
             // https://github.com/dotnet/AspNetCore.Docs/issues/17649
