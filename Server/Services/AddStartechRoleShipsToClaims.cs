@@ -12,38 +12,9 @@ using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.Services
 {
-    //public class AddStartechRoleShipsToClaims : IClaimsTransformation
-    //{
-
-    //    private ApplicationDbContext applicationDbContext;
-    //    private UserManager<ApplicationUser> userManager;
-
-    //    public AddStartechRoleShipsToClaims(ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
-    //    {
-    //        this.applicationDbContext = applicationDbContext;
-    //        this.userManager = userManager;
-    //    }
-
-    //    public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
-    //    {
-    //        if(principal.Identity.IsAuthenticated)
-    //        {
-    //            var user = userManager.GetUserAsync(principal);
-
-    //            var startechClaims = applicationDbContext.MappingStartechs.Where(x => x.ApplicationUserId == user.Id)
-    //                                .Select(x => new Claim( string.Concat("StartechOwnShip::", x.Startech.ToString()), x.IsLeader.ToString()));
-
-    //            principal.AddIdentity(new ClaimsIdentity(startechClaims));
-    //        }
-
-    //        return principal;
-
-    //    }
-    //}
-
     public class ApplicationUserClaimFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
     {
-        private ApplicationDbContext dbContext;
+        private readonly ApplicationDbContext dbContext;
 
         public ApplicationUserClaimFactory(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IOptions<IdentityOptions> options, ApplicationDbContext dbContext) : base(userManager, roleManager, options)
         {
