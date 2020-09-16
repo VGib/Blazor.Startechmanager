@@ -34,7 +34,7 @@ namespace Blazor.Startechmanager.Client.Component
 
         public async Task OnRemove(UserObject user)
         {
-            await DoAction($"StartechLeader/{StartechType}/RemoveLeader/{user.Id}");
+            await DoAction($"AdminLeader/{StartechType}/RemoveLeader/{user.Id}");
         }
 
         private async Task DoAction(string action)
@@ -58,7 +58,7 @@ namespace Blazor.Startechmanager.Client.Component
 
         public async Task LoadClients()
         {
-                Leaders = await HttpClient.GetFromJsonAsync<List<UserObject>>($"StartechLeader/{StartechType}/GetLeaders");
+                Leaders = await HttpClient.GetFromJsonAsync<List<UserObject>>($"AdminLeader/{StartechType}/GetLeaders");
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 InvokeAsync(StateHasChanged);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -82,7 +82,7 @@ namespace Blazor.Startechmanager.Client.Component
             {
                 return;
             }
-            await DoAction($"StartechLeader/{StartechType}/AddLeader/{UserObjectToAdd.Id}");
+            await DoAction($"AdminLeader/{StartechType}/AddLeader/{UserObjectToAdd.Id}");
         }
     }
 }

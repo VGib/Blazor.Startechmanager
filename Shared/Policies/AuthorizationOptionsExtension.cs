@@ -73,8 +73,6 @@ namespace Blazor.Startechmanager.Shared.Policies
     public class AllStartechPolicyAuthorizationRequiement : IAuthorizationRequirement
     {
         public bool IsLeader { get; set; }
-
-
     }
 
     public class StartechPolicyAuthorizationHandler : AuthorizationHandler<StartechPolicyAuthorizationRequirement>
@@ -92,7 +90,7 @@ namespace Blazor.Startechmanager.Shared.Policies
             {
                 context.Succeed(requirement);
             }
-            else if (startechClaim != null && startechClaim.Value == StartechClaimHelper.Leader)
+            else if (startechClaim?.Value == StartechClaimHelper.Leader)
             {
                 context.Succeed(requirement);
             }
