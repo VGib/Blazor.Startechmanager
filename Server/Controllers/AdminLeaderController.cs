@@ -16,9 +16,9 @@ namespace Blazor.Startechmanager.Server.Controllers
     [Route("{controller}/{startechType}/{action}/{userId:int?}")]
     [Authorize(Policy = Roles.Admin)]
     [ApiController]
-    public class StartechLeaderController : ControllerBase
+    public class AdminLeaderController : ControllerBase
     {
-        public StartechLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext)
+        public AdminLeaderController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext)
         {
             DbContext = dbContext;
             UserManager = userManager;

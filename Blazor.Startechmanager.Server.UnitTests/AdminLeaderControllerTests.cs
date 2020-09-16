@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
 {
-    public class StartechLeaderControllerTests : BaseTestsWithDbContext<StartechLeaderController>
+    public class AdminLeaderControllerTests : BaseTestsWithDbContext<AdminLeaderController>
     {
         public Mock<UserManager<ApplicationUser>> UserManager { get; set; }
 
