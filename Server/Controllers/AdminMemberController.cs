@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Blazor.Startechmanager.Server.Data;
+using Blazor.Startechmanager.Server.Models;
 using Blazor.Startechmanager.Shared.Models;
 using Blazor.Startechmanager.Shared.Policies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
@@ -17,7 +22,6 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             AuthorizationService = authorizationService;
         }
-
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
@@ -39,9 +43,51 @@ namespace Blazor.Startechmanager.Server.Controllers
     [Route("{controller}/{startechType}/{action}/{userd:int?}")]
     public class AdminMemberController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext dbContext;
+
+        public AdminMemberController(ApplicationDbContext dbContext)
         {
-            return View();
+            this.dbContext = dbContext;
+        }
+
+        public async Task<IList<UserObject>> GetMembers(Startechs startechType)
+        {
+            return await dbContext.Users.Where(x => x.Startechs.Any(y => y.Startech == startechType && !y.IsLeader && x.Id == y.ApplicationUserId))
+                .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToListAsync();
+        }
+
+        public async Task<IActionResult> SetMember(Startechs startechType, int userId)
+        {
+            if (!await dbContext.MappingStartechs.AnyAsync(x => x.ApplicationUserId == userId && x.Startech == startechType))
+            {
+                dbContext.Add(new MappingStartechUser
+                {
+                    ApplicationUserId = userId,
+                    Startech = startechType,
+                    IsLeader = false
+                });
+                await dbContext.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+        public async Task<IActionResult> RemoveMember(Startechs startechType, int userId)
+        {
+            var startechMembership = await dbContext.MappingStartechs.FirstOrDefaultAsync(x => x.ApplicationUserId == userId && x.Startech == startechType);
+            if(startechMembership is null)
+            {
+                return BadRequest($"the user is not member of startech {startechType}");
+            }
+            if(startechMembership.IsLeader)
+            {
+                return BadRequest("only admin in an admin section can remove a leader");
+            }
+
+            dbContext.Remove(startechMembership);
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
