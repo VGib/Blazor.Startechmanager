@@ -10,9 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Startechmanager.Shar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Startechmanager.Server.UnitTests", "Blazor.Startechmanager.Server.UnitTests\Blazor.Startechmanager.Server.UnitTests.csproj", "{516C3742-BE85-40BD-9588-293AF389DB8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Common.UnitTests\Common.UnitTests.csproj", "{924720E9-D22A-4AD5-9A66-49EBE8F99CD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.UnitTests", "Common.UnitTests\Common.UnitTests.csproj", "{924720E9-D22A-4AD5-9A66-49EBE8F99CD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.startechmanager.Client.UnitTests", "Blazor.startechmanager.Client.UnitTests\Blazor.startechmanager.Client.UnitTests.csproj", "{A0B9713B-BEE0-4C3E-B7A5-9E5DEA4E42EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.startechmanager.Client.UnitTests", "Blazor.startechmanager.Client.UnitTests\Blazor.startechmanager.Client.UnitTests.csproj", "{A0B9713B-BEE0-4C3E-B7A5-9E5DEA4E42EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

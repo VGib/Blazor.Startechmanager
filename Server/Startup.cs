@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using Blazor.Startechmanager.Shared.Policies;
 using Blazor.Startechmanager.Server.Services;
+using Blazor.Startechmanager.Server.Controllers;
 
 namespace Blazor.Startechmanager.Server
 {
@@ -75,6 +76,8 @@ namespace Blazor.Startechmanager.Server
             // Problem for remoting role in Blazor
             // https://github.com/dotnet/AspNetCore.Docs/issues/17649
             services.AddTransient<IProfileService, SendClaimsToBlazorClientProfileService>();
+
+            services.AddScoped<AuthorizeAdminMember>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
