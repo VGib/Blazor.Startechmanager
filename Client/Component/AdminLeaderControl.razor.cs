@@ -27,9 +27,6 @@ namespace Blazor.Startechmanager.Client.Component
         public IMessageDisplayer  MessageDisplayer { get; set; }
 
 #nullable enable
-
-        public UserObject? UserObjectToAdd { get; set; }
-
         public List<UserObject> Leaders { get; set; } = new List<UserObject>();
 
         public async Task OnRemove(UserObject user)

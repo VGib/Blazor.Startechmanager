@@ -56,9 +56,8 @@ namespace Blazor.startechmanager.Client.UnitTests
             var target = CreateComponent(StartechType, DisplayName);
             await Task.Delay(30);
             var userObjectToAdd = new UserObject { Id = 5,  UserName =  "toAdd13215" };
-            target.Instance.UserObjectToAdd = userObjectToAdd;
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminLeader/Admin/AddLeader/5").Respond(HttpStatusCode.OK);
-            target.Instance.AddUser();
+            target.Instance.AddUser(userObjectToAdd);
             MockHttp.VerifyNoOutstandingExpectation();
         }
 
@@ -80,10 +79,9 @@ namespace Blazor.startechmanager.Client.UnitTests
             var target = CreateComponent(StartechType, DisplayName);
             await Task.Delay(30);
             var userObjectToAdd = new UserObject { Id = 5, UserName = "toAdd13215" };
-            target.Instance.UserObjectToAdd = userObjectToAdd;
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminLeader/Admin/AddLeader/5").Respond(HttpStatusCode.OK);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminLeader/Admin/GetLeaders").Respond("application/json", JsonSerializer.Serialize(Users.Union(new[] { userObjectToAdd})));
-            target.Instance.AddUser();
+            target.Instance.AddUser(userObjectToAdd);
             target.WaitForAssertion(() => target.Nodes.QuerySelectorAll("li:contains(\"toAdd13215\")").Empty(), TimeSpan.FromMilliseconds(30));
         }
 
