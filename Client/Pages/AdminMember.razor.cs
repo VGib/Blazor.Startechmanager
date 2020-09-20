@@ -30,6 +30,12 @@ namespace Blazor.Startechmanager.Client.Pages
             LoadMembers();
         }
 
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            LoadMembers();
+        }
+
         public async Task LoadMembers()
         {
             Members = await HttpClient.GetFromJsonAsync<List<UserObject>>($"AdminMember/{StartechType}/GetMembers");

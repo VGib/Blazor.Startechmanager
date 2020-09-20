@@ -1,18 +1,22 @@
 ﻿@page "/members/{startechType}"
 @using BlazorTable
-<h3 class="mb-5">AdminMember</h3>
+<div class="mb-3"><h3>Admin @StartechType Members</h3></div>
     <SelectAndAddUser AddButtonName="Add Member" Add="Add" ></SelectAndAddUser>
 <div class="card">
     <Table TableItem="UserObject" Items="Members" PageSize="50">
-        <Column TableItem="UserObject" Title="User Name" Field="@(x => x.UserName)" Sortable="true" Filterable="true"></Column>
-        <Column TableItem="UserObject" Title="">
+        <Column TableItem="UserObject" Title="User Name" Field="@(x => x.UserName)" Sortable="true" Filterable="true">
             <Template>
-                <a @onclick="@(() => View(context))" href="">view</a>
+                <span class="oi oi-person mr-2" />@context.UserName
             </Template>
         </Column>
-        <Column TableItem="UserObject" Title="">
+        <Column TableItem="UserObject" Title="" Width="120px" Align="Align.Center">
             <Template>
-                <a @onclick="@(() => Remove(context))" href="">remove</a>
+                <button class="btn btn-outline-primary" @onclick="@(() => View(context))" ><span class="oi oi-eye mr-2" />view</button>
+            </Template>
+        </Column>
+        <Column TableItem="UserObject" Title="" Width="120px" Align="Align.Center">
+            <Template>
+                <button class="btn btn-outline-primary" @onclick="@(() => Remove(context))" ><span class="oi oi-circle-x  mr-2" />remove</button>
             </Template>
         </Column>
         <Pager ShowPageNumber="true" ShowTotalCount="true" />
