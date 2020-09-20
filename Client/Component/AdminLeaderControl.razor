@@ -2,18 +2,7 @@
 <div class="card" style="padding: 25px; margin-bottom: 35px" >
     <h1>@DisplayName</h1>
     <div class="d-flex flew-row h-auto" style="margin-bottom: 35px;">
-        <BlazoredTypeahead SearchMethod="SearchUser" Debounce="200"  @bind-Value="UserObjectToAdd">
-            <SelectedTemplate>
-                @context.UserName
-            </SelectedTemplate>
-            <ResultTemplate>
-                @context.UserName
-            </ResultTemplate>
-            <NotFoundTemplate>
-                Sorry no result
-            </NotFoundTemplate>
-        </BlazoredTypeahead>
-        <button @onclick="AddUser" style="width: 210px; " class="btn btn-outline-primary ml-3">Add @DisplayName</button>
+        <SelectAndAddUser AddButtonName="@("Add " + DisplayName)" Add="AddUser" ></SelectAndAddUser>
     </div>
     <div class="alert alert-primary">List of all @DisplayName</div>
     <ul class="list-group">

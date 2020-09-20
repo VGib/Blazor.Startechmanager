@@ -42,7 +42,7 @@ namespace Blazor.Startechmanager.Client.Component
             var result = await HttpClient.GetAsync(action);
             if (!result?.IsSuccessStatusCode ?? false)
             {
-                await MessageDisplayer.Display("something occurs", $"an error occured: {await result.Content.ReadAsStringAsync()}");
+                await MessageDisplayer.DisplayErrorMessage(await result.Content.ReadAsStringAsync());
             }
             LoadClients();
         }
@@ -76,13 +76,9 @@ namespace Blazor.Startechmanager.Client.Component
             return await result.Content.ReadFromJsonAsync<IList<UserObject>>();
         }
 
-        public async Task AddUser()
+        public async Task AddUser(UserObject user)
         {
-            if ( UserObjectToAdd is null)
-            {
-                return;
-            }
-            await DoAction($"AdminLeader/{StartechType}/AddLeader/{UserObjectToAdd.Id}");
+            await DoAction($"AdminLeader/{StartechType}/AddLeader/{user.Id}");
         }
     }
 }

@@ -1,17 +1,20 @@
 ﻿@page "/members/{startechType}"
 @using BlazorTable
-<h3>AdminMember</h3>
-<Table TableItem="UserObject" Items="Users" PageSize="50">
-    <Column TableItem="UserObject" Title="User Name" Field="@(x => x.UserName)" Sortable="true" Filterable="true"></Column>
-    <Column TableItem="UserObject" Title="" >
-        <Template>
-            <a @onclick="@(() => View(context))" href="">view</a>
-        </Template>
-    </Column>
-    <Column TableItem="UserObject" Title="" >
-        <Template>
-            <a @onclick="@(() => Remove(context))" href="">remove</a>
-        </Template>
-    </Column>
-    <Pager ShowPageNumber="true" ShowTotalCount="true" />
-</Table>
+<h3 class="mb-5">AdminMember</h3>
+    <SelectAndAddUser AddButtonName="Add Member" Add="Add" ></SelectAndAddUser>
+<div class="card">
+    <Table TableItem="UserObject" Items="Members" PageSize="50">
+        <Column TableItem="UserObject" Title="User Name" Field="@(x => x.UserName)" Sortable="true" Filterable="true"></Column>
+        <Column TableItem="UserObject" Title="">
+            <Template>
+                <a @onclick="@(() => View(context))" href="">view</a>
+            </Template>
+        </Column>
+        <Column TableItem="UserObject" Title="">
+            <Template>
+                <a @onclick="@(() => Remove(context))" href="">remove</a>
+            </Template>
+        </Column>
+        <Pager ShowPageNumber="true" ShowTotalCount="true" />
+    </Table>
+</div>

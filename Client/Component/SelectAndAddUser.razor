@@ -1,0 +1,49 @@
+﻿@using Blazored.Typeahead$
+<div class="d-flex flew-row h-auto" style="margin-bottom: 35px;">
+    <BlazoredTypeahead SearchMethod="SearchUser" Debounce="200" @bind-Value="UserObjectToAdd">
+        <SelectedTemplate>
+            @context.UserName
+        </SelectedTemplate>
+        <ResultTemplate>
+            @context.UserName
+        </ResultTemplate>
+        <NotFoundTemplate>
+            Sorry no result
+        </NotFoundTemplate>
+    </BlazoredTypeahead>
+    <button @onclick="AddUser" style="width: 210px; " class="btn btn-outline-primary ml-3">@AddButtonName</button>
+</div>
+    @code {
+
+#nullable disable
+        [Parameter]
+        public EventCallback<UserObject> Add { get; set; }
+
+        [Parameter]
+        public string AddButtonName { get; set; } = "Add";
+
+        public UserObject UserObjectToAdd { get; set; }
+
+        [Inject]
+        public HttpClient HttpClient { get; set; }
+#nullable enable
+
+        public async Task<IEnumerable<UserObject>> SearchUser(string searchText)
+        {
+            var result = await HttpClient.PostAsJsonAsync<string>("SearchUser", searchText);
+            if (!result.IsSuccessStatusCode)
+            {
+                return Array.Empty<UserObject>();
+            }
+
+            return await result.Content.ReadFromJsonAsync<IList<UserObject>>();
+        }
+
+        public async Task AddUser()
+        {
+            if (UserObjectToAdd != null)
+            {
+                await Add.InvokeAsync(UserObjectToAdd);
+            }
+        }
+    }

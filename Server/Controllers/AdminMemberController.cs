@@ -40,7 +40,7 @@ namespace Blazor.Startechmanager.Server.Controllers
     }
 
     [ServiceFilter(typeof(AuthorizeAdminMember), IsReusable = false)]
-    [Route("{controller}/{startechType}/{action}/{userd:int?}")]
+    [Route("{controller}/{startechType}/{action}/{userId:int?}")]
     public class AdminMemberController : Controller
     {
         private readonly ApplicationDbContext dbContext;
