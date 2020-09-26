@@ -84,6 +84,25 @@ namespace Blazor.Startechmanager.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StarpointsItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserId = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    NumberOfPoints = table.Column<int>(nullable: false),
+                    Startech = table.Column<int>(nullable: false),
+                    ValidationState = table.Column<int>(nullable: false),
+                    UrlJustification = table.Column<string>(nullable: true),
+                    TextJustification = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StarpointsItem", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -301,6 +320,9 @@ namespace Blazor.Startechmanager.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "StarpointsItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

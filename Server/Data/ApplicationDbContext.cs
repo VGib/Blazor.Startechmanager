@@ -1,4 +1,5 @@
 ﻿using Blazor.Startechmanager.Server.Models;
+using Blazor.Startechmanager.Shared.Models;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
@@ -27,6 +28,8 @@ namespace Blazor.Startechmanager.Server.Data
         DbSet<DeviceFlowCodes> IPersistedGrantDbContext.DeviceFlowCodes { get; set; }
 
         public virtual DbSet<MappingStartechUser> MappingStartechs { get; set; }
+
+        public virtual DbSet<StarpointsItem> StarpointsItem { get; set; }
 
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => base.SaveChangesAsync();
 

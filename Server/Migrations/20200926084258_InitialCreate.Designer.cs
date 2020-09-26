@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blazor.Startechmanager.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200903231245_InitialCreate")]
+    [Migration("20200926084258_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,39 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("MappingStartechs");
+                });
+
+            modelBuilder.Entity("Blazor.Startechmanager.Shared.Models.StarpointsItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ApplicationUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Startech")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TextJustification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlJustification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ValidationState")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StarpointsItem");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
