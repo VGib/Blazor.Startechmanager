@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blazor.Startechmanager.Shared.Models
+﻿namespace Blazor.Startechmanager.Shared.Models
 {
     public class UserObject
     {
