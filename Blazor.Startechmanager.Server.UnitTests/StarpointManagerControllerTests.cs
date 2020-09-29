@@ -9,6 +9,21 @@ namespace Blazor.Startechmanager.Server.UnitTests
 {
     public class StarpointManagerControllerTests : BaseTestsWithDbContext<StarPointsManagerController>
     {
+        #region GetStarpointsTypes
+        [Test]
+        public async Task GetStarpointsTypes_should_return_all_starpointTypes()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task GetStarpointsTypes_can_be_called_by_every_body()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        #endregion
+
         #region GetStarpoints
         [Test]
         public async Task GetStarpoints_should_return_only_starpoints_of_the_history_duration()
@@ -50,6 +65,13 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             throw new NotImplementedException("to do");
         }
+
+        [Test]
+        public async Task GetStarpoints_should_return_the_starpoint_types ()
+        {
+            throw new NotImplementedException("to do");
+        }
+
         #endregion
 
         #region GetInValidationStarpoints
@@ -110,6 +132,24 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         [Test]
         public async Task CreateStarpoints_save_the_created_starpoints()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task CreateStarpoints_only_startech_leader_can_create_starpoint_with_no_starpoints_type()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task when_a_startech_member_create_a_starpointsItem_with_a_starpoints_type_the_numberOfPoints_should_be_the_types_number_of_points()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task a_startech_leader_can_create_a_starpoint_item_with_a_type_and_a_different_starpoint_type()
         {
             throw new NotImplementedException("to do");
         }
@@ -222,6 +262,18 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         [Test]
         public async Task UpdateStarpoints_updates_the_starpoints_in_database()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task UpdateStarpoints_only_startech_leader_can_modify_the_starpoint_type()
+        {
+            throw new NotImplementedException("to do");
+        }
+
+        [Test]
+        public async Task UpdateStarpoints_starpoint_type_can_be_modifyed_only_on_InValidation_state()
         {
             throw new NotImplementedException("to do");
         }
