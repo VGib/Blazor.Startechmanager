@@ -157,6 +157,9 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.Property<int>("NumberOfPoints")
                         .HasColumnType("int");
 
+                    b.Property<int>("StarpointsTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Startech")
                         .HasColumnType("int");
 
@@ -171,7 +174,31 @@ namespace Blazor.Startechmanager.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StarpointsTypeId");
+
                     b.ToTable("StarpointsItem");
+                });
+
+            modelBuilder.Entity("Blazor.Startechmanager.Shared.Models.StarpointsType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfPoint")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StarpointsType");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -362,6 +389,15 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.HasOne("Blazor.Startechmanager.Server.Models.ApplicationUser", null)
                         .WithMany("Startechs")
                         .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Blazor.Startechmanager.Shared.Models.StarpointsItem", b =>
+                {
+                    b.HasOne("Blazor.Startechmanager.Shared.Models.StarpointsType", "Type")
+                        .WithMany()
+                        .HasForeignKey("StarpointsTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

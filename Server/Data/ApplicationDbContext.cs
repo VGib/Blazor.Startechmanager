@@ -31,6 +31,8 @@ namespace Blazor.Startechmanager.Server.Data
 
         public virtual DbSet<StarpointsItem> StarpointsItem { get; set; }
 
+        public virtual DbSet<StarpointsType> StarpointsType { get; set; }
+
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => base.SaveChangesAsync();
 
 #nullable enable
