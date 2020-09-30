@@ -1,4 +1,5 @@
 ﻿using Blazor.Startechmanager.Server.Controllers;
+using Blazor.Startechmanager.Shared.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,40 @@ namespace Blazor.Startechmanager.Server.UnitTests
 {
     public class StarpointManagerControllerTests : BaseTestsWithDbContext<StarPointsManagerController>
     {
-        #region GetStarpointsTypes
-        [Test]
-        public async Task GetStarpointsTypes_should_return_all_starpointTypes()
+        [SetUp]
+        public void SetupValues()
         {
-            throw new NotImplementedException("to do");
+            DbContext.Add(new StarpointsType
+            {
+                Id = 1,
+                TypeName = "Blog Article",
+                NumberOfPoint = 15,
+                IsActive = true
+            });
+            DbContext.Add(new StarpointsType
+            {
+                Id = 2,
+                TypeName = "Course",
+                NumberOfPoint = 150,
+                IsActive = true
+            });
+            DbContext.Add(new StarpointsType
+            {
+                Id = 3,
+                TypeName = "Presentation",
+                NumberOfPoint = 80,
+                IsActive = true
+            });
+            DbContext.Add(new StarpointsType
+            {
+                Id = 4,
+                TypeName = "Obsolete",
+                NumberOfPoint = 999,
+                IsActive = false
+            });
+            DbContext.SaveChanges();
         }
 
-        [Test]
-        public async Task GetStarpointsTypes_can_be_called_by_every_body()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        #endregion
 
         #region GetStarpoints
         [Test]
