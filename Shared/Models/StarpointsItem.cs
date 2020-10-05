@@ -17,8 +17,8 @@ namespace Blazor.Startechmanager.Shared.Models
         public int NumberOfPoints { get; set; }
 
         public Startechs Startech { get; set; }
-        public StarpointsType Type { get; set; }
-        public int StarpointsTypeId { get; set; }
+        public StarpointsType? Type { get; set; }
+        public int? StarpointsTypeId { get; set; }
 
         public ValidationState ValidationState { get; set; }
 

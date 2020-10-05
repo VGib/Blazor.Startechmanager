@@ -1,26 +1,100 @@
 ﻿using Blazor.Startechmanager.Server.Data;
+using Blazor.Startechmanager.Server.Models;
+using Blazor.Startechmanager.Shared.Constants;
 using Blazor.Startechmanager.Shared.Models;
+using Blazor.Startechmanager.Shared.Policies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.Controllers
 {
+    [Serializable]
+    public class StarpointManagerException : Exception
+    {
+        public StarpointManagerException() { }
+        public StarpointManagerException(string message) : base(message) { }
+        public StarpointManagerException(string message, Exception inner) : base(message, inner) { }
+        protected StarpointManagerException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
     [Route("{controller}/{startechType}/{action}/{userId:int?}")]
     public class StarPointsManagerController : Controller
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IAuthorizationService authorizationService;
 
-        public StarPointsManagerController(ApplicationDbContext dbContext)
+        public StarPointsManagerController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, IAuthorizationService authorizationService)
         {
             this.dbContext = dbContext;
+            this.userManager = userManager;
+            this.httpContextAccessor = httpContextAccessor;
+            this.authorizationService = authorizationService;
         }
 
         public async Task<IList<StarpointsType>> GetStarpointsType()
         {
             return await dbContext.StarpointsType.Where(x => x.IsActive).ToListAsync();
+        }
+
+        public async Task<IList<StarpointsItem>> GetStarpoints( [FromRoute] int userId ,[FromQuery] TimeSpan? history )
+        {
+            var historyWithDefault = DateTime.Now.Add(-history ?? TimeSpan.FromDays(-730));
+            ( var userIdToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
+
+            if(!isLeader)
+            {
+                startechs = GetAllStartechs();
+            }
+
+            return await dbContext.StarpointsItem.Where(x => x.ApplicationUserId == userIdToDealWith && startechs.Contains(x.Startech))
+                        .Where(x => x.Date > historyWithDefault).ToListAsync();
+        }
+
+        private static IList<Startechs> GetAllStartechs()
+        {
+            return Enum.GetValues(typeof(Startechs)).Cast<Startechs>().ToArray();
+        }
+        private  async Task<(int userIdToDealWith , IList<Startechs> startechs, bool isLeader)> GetStartechsToStudyForUser(int userId)
+        {
+            if(userId == ThisUser.Id)
+            {
+                var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+                var startechs = await dbContext.MappingStartechs.Where(x => x.ApplicationUserId == user.Id).Select(x => x.Startech).ToListAsync();
+
+                return (user.Id, startechs, false);
+            }
+            else
+            {
+                if(!(await authorizationService.AuthorizeAsync(httpContextAccessor.HttpContext.User, StartechPolicyHelper.AllStartechLeader)).Succeeded)
+                {
+                    throw new UnauthorizedAccessException("you should be a startech leader!");
+                }
+
+                var user = await dbContext.Users.Include(x => x.Startechs).FirstOrDefaultAsync(x => x.Id == userId);
+
+                if(user is null)
+                {
+                    throw new StarpointManagerException("user not found");
+                }
+
+                return (user.Id, user.Startechs.Select(x => x.Startech).Where(x => IsStartechLeader(x)).ToArray(), true);
+            }
+        }
+
+        private bool IsStartechLeader(Startechs x)
+        {
+            return authorizationService.AuthorizeAsync(httpContextAccessor.HttpContext.User, StartechPolicyHelper.GetPolicyName(x, MustBeLeader: true)).GetAwaiter().GetResult().Succeeded;
         }
     }
 }
