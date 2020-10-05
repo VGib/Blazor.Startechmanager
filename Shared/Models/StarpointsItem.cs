@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blazor.Startechmanager.Shared.Models
 {
@@ -14,6 +15,7 @@ namespace Blazor.Startechmanager.Shared.Models
         public int Id { get; set; }
         public int ApplicationUserId { get; set; }
         public DateTime Date { get; set; }
+
         public int NumberOfPoints { get; set; }
 
         public Startechs Startech { get; set; }

@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.Controllers
@@ -28,7 +28,7 @@ namespace Blazor.Startechmanager.Server.Controllers
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
-    [Route("{controller}/{startechType}/{action}/{userId:int?}")]
+    [Route("{controller}/{action}/{userId:int?}")]
     public class StarPointsManagerController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -69,7 +69,48 @@ namespace Blazor.Startechmanager.Server.Controllers
             return await dbContext.StarpointsItem.Where(x => startechs.Contains(x.Startech) && x.ValidationState == ValidationState.InStudy).ToListAsync();
         }
 
-        private async Task<ApplicationUser> GetThisUser(bool returnOnlyStartechWhereUserIsLeader = false)
+        public async Task<IActionResult> CreateStarpoints([FromRoute] int userId, [FromBody] StarpointsItem itemToCreate )
+        {
+            if(!ModelState.IsValid)
+            {
+               return BadRequest($"your model is not valid :: {ModelState.GetNonValidationErrorMessage()}");
+            }
+
+            (var userToDealWithId, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
+
+            if(!startechs.Contains(itemToCreate.Startech))
+            {
+                return StatusCode((int)HttpStatusCode.MethodNotAllowed, $"you or user don't have enought right on startech {itemToCreate.Startech}");
+            }
+
+            itemToCreate.ApplicationUserId = userToDealWithId;
+
+            StarpointsType? starpointTypeToCreate = await GetStarpointType(itemToCreate.Type);
+            itemToCreate.StarpointsTypeId = starpointTypeToCreate?.Id;
+            itemToCreate.ValidationState = isLeader ? ValidationState.Validated : ValidationState.InStudy;
+
+            if (!isLeader)
+            {
+                if (starpointTypeToCreate is null)
+                {
+                    return BadRequest("only startech leader can create starpoints from non typed startech");
+                }
+                itemToCreate.NumberOfPoints = starpointTypeToCreate.NumberOfPoint;
+            }
+
+            dbContext.Add(itemToCreate);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+        private async Task<StarpointsType> GetStarpointType(StarpointsType type)
+        {
+            var typeToCreateId = type?.Id ?? -1;
+            return  await dbContext.StarpointsType.FirstOrDefaultAsync(x => x.Id == typeToCreateId && x.IsActive);
+        }
+
+        private async Task<ApplicationUser> GetThisUser( bool returnOnlyStartechWhereUserIsLeader = false)
         {
             Expression<Func<MappingStartechUser, bool>> filterStartechWithIsLeader = GetIsLeaderFilter(returnOnlyStartechWhereUserIsLeader);
             var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
@@ -93,7 +134,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             return Enum.GetValues(typeof(Startechs)).Cast<Startechs>().ToArray();
         }
-        private  async Task<(int userIdToDealWith , IList<Startechs> startechs, bool isLeader)> GetStartechsToStudyForUser(int userId)
+        private  async Task<(int userToDealWith , IList<Startechs> startechs, bool isLeader)> GetStartechsToStudyForUser(int userId)
         {
             if(userId == ThisUser.Id)
             {
