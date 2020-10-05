@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.Controllers
@@ -61,6 +63,32 @@ namespace Blazor.Startechmanager.Server.Controllers
                         .Where(x => x.Date > historyWithDefault).ToListAsync();
         }
 
+        public async Task<IList<StarpointsItem>> GetInValidationStarpoints()
+        {
+            var startechs = FromUserToHisStartechs(await GetThisUser(returnOnlyStartechWhereUserIsLeader: true));
+            return await dbContext.StarpointsItem.Where(x => startechs.Contains(x.Startech) && x.ValidationState == ValidationState.InStudy).ToListAsync();
+        }
+
+        private async Task<ApplicationUser> GetThisUser(bool returnOnlyStartechWhereUserIsLeader = false)
+        {
+            Expression<Func<MappingStartechUser, bool>> filterStartechWithIsLeader = GetIsLeaderFilter(returnOnlyStartechWhereUserIsLeader);
+            var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+            user.Startechs = await dbContext.MappingStartechs.Where(x => x.ApplicationUserId == user.Id).Where(filterStartechWithIsLeader).ToListAsync();
+            return user;
+        }
+
+        private static Expression<Func<MappingStartechUser, bool>> GetIsLeaderFilter(bool returnOnlyStartechWhereUserIsLeader)
+        {
+            if(returnOnlyStartechWhereUserIsLeader)
+            {
+                return x => x.IsLeader;
+            }
+            else
+            {
+                return _ => true;
+            }
+        }
+
         private static IList<Startechs> GetAllStartechs()
         {
             return Enum.GetValues(typeof(Startechs)).Cast<Startechs>().ToArray();
@@ -69,10 +97,9 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             if(userId == ThisUser.Id)
             {
-                var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
-                var startechs = await dbContext.MappingStartechs.Where(x => x.ApplicationUserId == user.Id).Select(x => x.Startech).ToListAsync();
+                var user = await GetThisUser(returnOnlyStartechWhereUserIsLeader: false);
 
-                return (user.Id, startechs, false);
+                return (user.Id, FromUserToHisStartechs(user), false);
             }
             else
             {
@@ -90,6 +117,11 @@ namespace Blazor.Startechmanager.Server.Controllers
 
                 return (user.Id, user.Startechs.Select(x => x.Startech).Where(x => IsStartechLeader(x)).ToArray(), true);
             }
+        }
+
+        private static Startechs[] FromUserToHisStartechs(ApplicationUser user)
+        {
+            return user.Startechs.Select(x => x.Startech).ToArray();
         }
 
         private bool IsStartechLeader(Startechs x)

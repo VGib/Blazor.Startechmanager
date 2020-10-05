@@ -209,7 +209,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 StarpointsTypeId = Presentation.Id,
                 Startech = Startechs.Dotnet,
                 TextJustification = "justification 3",
-                ValidationState = ValidationState.InStudy
+                ValidationState = ValidationState.Refused
             });
             DbContext.Add(new StarpointsItem
             {
@@ -231,7 +231,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
                 StarpointsTypeId = Presentation.Id,
                 Startech = Startechs.Dotnet,
                 TextJustification = "justification 3",
-                ValidationState = ValidationState.Validated
+                ValidationState = ValidationState.InStudy
             });
             DbContext.Add(new StarpointsItem
             {
@@ -268,23 +268,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
             ServiceCollection.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
         }
-
-        #region GetInValidationStarpoints
-
-        [Test]
-        public async Task GetInValidationStarpoints_should_return_only_starpoints_to_validate_where_current_user_is_member_of()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task GetInValidationStarpoints_should_return_starpoints_to_validate_from_all_users()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-
-        #endregion
 
         #region CreateStarpoints
 
