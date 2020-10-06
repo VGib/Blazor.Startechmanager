@@ -3,6 +3,7 @@ using Blazor.Startechmanager.Server.Models;
 using Blazor.Startechmanager.Shared.Constants;
 using Blazor.Startechmanager.Shared.Models;
 using Blazor.Startechmanager.Shared.Policies;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,14 +53,14 @@ namespace Blazor.Startechmanager.Server.Controllers
         public async Task<IList<StarpointsItem>> GetStarpoints( [FromRoute] int userId ,[FromQuery] TimeSpan? history )
         {
             var historyWithDefault = DateTime.Now.Add(-history ?? TimeSpan.FromDays(-730));
-            ( var userIdToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
+            ( var userToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
 
             if(!isLeader)
             {
                 startechs = GetAllStartechs();
             }
 
-            return await dbContext.StarpointsItem.Where(x => x.ApplicationUserId == userIdToDealWith && startechs.Contains(x.Startech))
+            return await dbContext.StarpointsItem.Where(x => x.ApplicationUserId == userToDealWith.Id && startechs.Contains(x.Startech))
                         .Where(x => x.Date > historyWithDefault).ToListAsync();
         }
 
@@ -76,18 +77,19 @@ namespace Blazor.Startechmanager.Server.Controllers
                return BadRequest($"your model is not valid :: {ModelState.GetNonValidationErrorMessage()}");
             }
 
-            (var userToDealWithId, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
+            (var userToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
 
-            if(!startechs.Contains(itemToCreate.Startech))
+            if (!startechs.Contains(itemToCreate.Startech))
             {
                 return StatusCode((int)HttpStatusCode.MethodNotAllowed, $"you or user don't have enought right on startech {itemToCreate.Startech}");
             }
 
-            itemToCreate.ApplicationUserId = userToDealWithId;
+            itemToCreate.ApplicationUserId = userToDealWith.Id;
 
             StarpointsType? starpointTypeToCreate = await GetStarpointType(itemToCreate.Type);
             itemToCreate.StarpointsTypeId = starpointTypeToCreate?.Id;
             itemToCreate.ValidationState = isLeader ? ValidationState.Validated : ValidationState.InStudy;
+            itemToCreate.Date = DateTime.Now;
 
             if (!isLeader)
             {
@@ -96,6 +98,15 @@ namespace Blazor.Startechmanager.Server.Controllers
                     return BadRequest("only startech leader can create starpoints from non typed startech");
                 }
                 itemToCreate.NumberOfPoints = starpointTypeToCreate.NumberOfPoint;
+            }
+            else
+            {
+                if(itemToCreate.Type != null && starpointTypeToCreate is null)
+                {
+                    return BadRequest($"the type {itemToCreate.Type.TypeName} don't exist");
+                }
+
+                userToDealWith.NumberOfPoints += itemToCreate.NumberOfPoints;
             }
 
             dbContext.Add(itemToCreate);
@@ -134,13 +145,13 @@ namespace Blazor.Startechmanager.Server.Controllers
         {
             return Enum.GetValues(typeof(Startechs)).Cast<Startechs>().ToArray();
         }
-        private  async Task<(int userToDealWith , IList<Startechs> startechs, bool isLeader)> GetStartechsToStudyForUser(int userId)
+        private  async Task<(ApplicationUser , IList<Startechs> startechs, bool isLeader)> GetStartechsToStudyForUser(int userId)
         {
             if(userId == ThisUser.Id)
             {
                 var user = await GetThisUser(returnOnlyStartechWhereUserIsLeader: false);
 
-                return (user.Id, FromUserToHisStartechs(user), false);
+                return (user, FromUserToHisStartechs(user), false);
             }
             else
             {
@@ -156,7 +167,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                     throw new StarpointManagerException("user not found");
                 }
 
-                return (user.Id, user.Startechs.Select(x => x.Startech).Where(x => IsStartechLeader(x)).ToArray(), true);
+                return (user, user.Startechs.Select(x => x.Startech).Where(x => IsStartechLeader(x)).ToArray(), true);
             }
         }
 

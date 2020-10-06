@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Server.UnitTests
@@ -76,6 +75,14 @@ namespace Blazor.Startechmanager.Server.UnitTests
             IsActive = true
         };
 
+        protected readonly StarpointsType NonActiveType = new StarpointsType
+        {
+            Id = 4,
+            TypeName = "Obsolete",
+            NumberOfPoint = 999,
+            IsActive = false
+        };
+
         protected readonly ApplicationUser LeaderDotnet = new ApplicationUser
         {
             Id = 3,
@@ -108,13 +115,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
             DbContext.Add(BlogArticle);
             DbContext.Add(Course);
             DbContext.Add(Presentation);
-            DbContext.Add(new StarpointsType
-            {
-                Id = 4,
-                TypeName = "Obsolete",
-                NumberOfPoint = 999,
-                IsActive = false
-            });
+            DbContext.Add(NonActiveType);
 
 
             DbContext.Add(LeaderDotnet);
