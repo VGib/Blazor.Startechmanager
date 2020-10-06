@@ -270,51 +270,6 @@ namespace Blazor.Startechmanager.Server.UnitTests
             ServiceCollection.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() });
         }
 
-        #region UpdateValidationStatus
-
-        [Test]
-        public async Task UpdateValidationStatus_should_be_used_only_by_this_startech_owner()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_should_not_be_used_by_a_startech_leader_from_an_other_startech()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_should_save_the_new_validation_status()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_if_validation_status_is_not_updated_from_Validation_no_starpoints_should_be_added_to_the_user()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_if_validation_status_is_updated_to_validated_the_starpoints_should_be_added_to_the_user()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_if_validation_status_is_removed_the_starpoint_should_be_removed_from_the_user()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task UpdateValidationStatus_validating_the_same_status_should_be_an_error()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        #endregion
 
         #region UpdateStarpoints
 

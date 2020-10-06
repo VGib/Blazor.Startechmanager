@@ -86,7 +86,9 @@ namespace Blazor.Startechmanager.Server.Controllers
 
             itemToCreate.ApplicationUserId = userToDealWith.Id;
 
+#pragma warning disable CS8604 // Possible null reference argument.
             StarpointsType? starpointTypeToCreate = await GetStarpointType(itemToCreate.Type);
+#pragma warning restore CS8604 // Possible null reference argument.
             itemToCreate.StarpointsTypeId = starpointTypeToCreate?.Id;
             itemToCreate.ValidationState = isLeader ? ValidationState.Validated : ValidationState.InStudy;
             itemToCreate.Date = DateTime.Now;
@@ -113,6 +115,50 @@ namespace Blazor.Startechmanager.Server.Controllers
             dbContext.SaveChanges();
 
             return Ok();
+        }
+
+        [Route("{itemToUpdateId:int}/{newStatus}")]
+        public async Task<IActionResult> UpdateValidationStatus( [FromRoute] int itemToUpdateId, [FromRoute] ValidationState newStatus)
+        {
+            var itemToUpdate = await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemToUpdateId);
+
+            if(itemToUpdate is null)
+            {
+                return BadRequest($"unknown starpoint item {itemToUpdateId}");
+            }
+
+            if(! IsStartechLeader(itemToUpdate.Startech))
+            {
+                return BadRequest($"you should be leader of startech {itemToUpdate.Startech}");
+            }
+
+            if(itemToUpdate.ValidationState == newStatus)
+            {
+                return BadRequest("you're trying to modify the same  status");
+            }
+
+            if(itemToUpdate.ValidationState != ValidationState.Validated && newStatus == ValidationState.Validated)
+            {
+                await AddPointToUser(itemToUpdate.ApplicationUserId, itemToUpdate.NumberOfPoints);
+            }
+            else if(itemToUpdate.ValidationState == ValidationState.Validated )
+            {
+                await AddPointToUser(itemToUpdate.ApplicationUserId, - itemToUpdate.NumberOfPoints);
+            }
+
+            itemToUpdate.ValidationState = newStatus;
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+        private  async Task AddPointToUser(int applicationUserId, int numberOfPoints)
+        {
+            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == applicationUserId);
+            if(user != null)
+            {
+                user.NumberOfPoints += numberOfPoints;
+            }
         }
 
         private async Task<StarpointsType> GetStarpointType(StarpointsType type)
