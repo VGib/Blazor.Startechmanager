@@ -157,6 +157,69 @@ namespace Blazor.Startechmanager.Server.Controllers
             return await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemToUpdateId);
         }
 
+        public async Task<IActionResult> UpdateStarpoints([FromBody] StarpointsItem starpointToUpdate)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest($"starpoint item is invalid: {ModelState.GetNonValidationErrorMessage()}");
+            }
+
+            var inDatatabaseStarpointToUpdate =  await GetItem(starpointToUpdate.Id);
+
+            if(inDatatabaseStarpointToUpdate is null)
+            {
+                return BadRequest($"unknow starpoint item {starpointToUpdate.Id}");
+            }
+
+            var thisUser = GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
+
+            bool isStartechLeader = thisUser.Id != inDatatabaseStarpointToUpdate.ApplicationUserId;
+            if (isStartechLeader && !IsStartechLeader(inDatatabaseStarpointToUpdate.Startech))
+            {
+                return BadRequest("you don't have the right to do this");
+            }
+            else if (!isStartechLeader && inDatatabaseStarpointToUpdate.ValidationState != ValidationState.InStudy)
+            {
+                return BadRequest("current user can only modify InStudy state starpoints item");
+            }
+           
+
+            if(isStartechLeader)
+            {
+                if(inDatatabaseStarpointToUpdate.NumberOfPoints != starpointToUpdate.NumberOfPoints && inDatatabaseStarpointToUpdate.ValidationState == ValidationState.Validated)
+                {
+                    var userOfUpdatedStarpointsItem = await GetUser(inDatatabaseStarpointToUpdate.ApplicationUserId);
+                    userOfUpdatedStarpointsItem.NumberOfPoints += starpointToUpdate.NumberOfPoints - inDatatabaseStarpointToUpdate.NumberOfPoints;
+                    inDatatabaseStarpointToUpdate.NumberOfPoints = starpointToUpdate.NumberOfPoints;
+                }
+
+                var starpointType = await GetStarpointType(starpointToUpdate.Type);
+                if(starpointType?.Id != inDatatabaseStarpointToUpdate.StarpointsTypeId)
+                {
+                    inDatatabaseStarpointToUpdate.StarpointsTypeId = starpointType?.Id;
+                }
+            }
+
+            // update only what is necessary
+            if (inDatatabaseStarpointToUpdate.TextJustification != starpointToUpdate.TextJustification)
+            {
+                inDatatabaseStarpointToUpdate.TextJustification = starpointToUpdate.TextJustification;
+            }
+
+            if (inDatatabaseStarpointToUpdate.UrlJustification != starpointToUpdate.UrlJustification)
+            {
+                inDatatabaseStarpointToUpdate.UrlJustification = starpointToUpdate.UrlJustification;
+            }
+
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        private Task<ApplicationUser> GetUser(int applicationUserId)
+        {
+            return dbContext.Users.FirstOrDefaultAsync(x => x.Id == applicationUserId);
+        }
+
         [Route("{itemToCancelId:int}")]
         public async Task<IActionResult> CancelStarpoints(int itemToCancelId)
         {
@@ -194,7 +257,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
         }
 
-        private async Task<StarpointsType> GetStarpointType(StarpointsType type)
+        private async Task<StarpointsType> GetStarpointType(StarpointsType? type)
         {
             var typeToCreateId = type?.Id ?? -1;
             return  await dbContext.StarpointsType.FirstOrDefaultAsync(x => x.Id == typeToCreateId && x.IsActive);
