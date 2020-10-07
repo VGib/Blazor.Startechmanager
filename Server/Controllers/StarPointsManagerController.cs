@@ -171,7 +171,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                 return BadRequest($"unknow starpoint item {starpointToUpdate.Id}");
             }
 
-            var thisUser = GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
+            var thisUser = await GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
 
             bool isStartechLeader = thisUser.Id != inDatatabaseStarpointToUpdate.ApplicationUserId;
             if (isStartechLeader && !IsStartechLeader(inDatatabaseStarpointToUpdate.Startech))
