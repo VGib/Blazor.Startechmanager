@@ -348,40 +348,5 @@ namespace Blazor.Startechmanager.Server.UnitTests
 
         #endregion
 
-        #region CancelStarpoints
-
-        [Test]
-        public async Task CancelStarpoints_only_inValidation_starpoints_can_be_cancelled()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task CancelStarpoints_current_user_can_only_cancel_his_starpoints()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task CancelStarpoints_current_user_can_cancel_his_starpoint_even_if_is_not_member_of_the_startech()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task CancelStarpoints_current_user_can_only_cancel_from_other_user_for_startech_where_is_member_of()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-        [Test]
-        public async Task CancelStarpoints_removes_starpoints_from_database()
-        {
-            throw new NotImplementedException("to do");
-        }
-
-
-        #endregion
-
     }
 }

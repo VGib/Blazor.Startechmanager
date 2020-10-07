@@ -112,7 +112,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
 
             dbContext.Add(itemToCreate);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return Ok();
         }
@@ -120,34 +120,67 @@ namespace Blazor.Startechmanager.Server.Controllers
         [Route("{itemToUpdateId:int}/{newStatus}")]
         public async Task<IActionResult> UpdateValidationStatus( [FromRoute] int itemToUpdateId, [FromRoute] ValidationState newStatus)
         {
-            var itemToUpdate = await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemToUpdateId);
+            StarpointsItem? itemToUpdate = await GetItem(itemToUpdateId);
 
-            if(itemToUpdate is null)
+            if (itemToUpdate is null)
             {
                 return BadRequest($"unknown starpoint item {itemToUpdateId}");
             }
 
-            if(! IsStartechLeader(itemToUpdate.Startech))
+            if (!IsStartechLeader(itemToUpdate.Startech))
             {
                 return BadRequest($"you should be leader of startech {itemToUpdate.Startech}");
             }
 
-            if(itemToUpdate.ValidationState == newStatus)
+            if (itemToUpdate.ValidationState == newStatus)
             {
                 return BadRequest("you're trying to modify the same  status");
             }
 
-            if(itemToUpdate.ValidationState != ValidationState.Validated && newStatus == ValidationState.Validated)
+            if (itemToUpdate.ValidationState != ValidationState.Validated && newStatus == ValidationState.Validated)
             {
                 await AddPointToUser(itemToUpdate.ApplicationUserId, itemToUpdate.NumberOfPoints);
             }
-            else if(itemToUpdate.ValidationState == ValidationState.Validated )
+            else if (itemToUpdate.ValidationState == ValidationState.Validated)
             {
-                await AddPointToUser(itemToUpdate.ApplicationUserId, - itemToUpdate.NumberOfPoints);
+                await AddPointToUser(itemToUpdate.ApplicationUserId, -itemToUpdate.NumberOfPoints);
             }
 
             itemToUpdate.ValidationState = newStatus;
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        private async Task<StarpointsItem> GetItem(int itemToUpdateId)
+        {
+            return await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemToUpdateId);
+        }
+
+        [Route("{itemToCancelId:int}")]
+        public async Task<IActionResult> CancelStarpoints(int itemToCancelId)
+        {
+            var itemToCancel = await GetItem(itemToCancelId);
+
+            if(itemToCancel is null)
+            {
+                return BadRequest($"unknown starpoints item id {itemToCancelId}");
+            }
+
+            if(itemToCancel.ValidationState != ValidationState.InStudy)
+            {
+                return BadRequest("item to cancel should be in study state");
+            }
+
+            var user = await GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
+
+            if(itemToCancel.ApplicationUserId != user.Id &&  !user.Startechs.Any(x => x.Startech == itemToCancel.Startech))
+            {
+                return BadRequest($"you don't have enougth right to cancel item {itemToCancelId}");
+            }
+
+            dbContext.Remove(itemToCancel);
+            await dbContext.SaveChangesAsync();
 
             return Ok();
         }
