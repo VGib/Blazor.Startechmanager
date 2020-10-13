@@ -35,14 +35,14 @@ namespace Blazor.Startechmanager.Server.Controllers
             if(startechType == Roles.Admin)
             {
                 return (await UserManager.GetUsersInRoleAsync(Roles.Admin))
-                        .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToList();
+                        .Select(x => new UserObject { Id = x.Id, UserName = x.UserName, NumberOfpoints = x.NumberOfPoints}).ToList();
             }
             else
             {
                 Startechs startech = GetStarttechAsEnum(startechType);
                 return await DbContext.Users.Include(x => x.Startechs)
                        .Where(x => x.Startechs.Any(y => y.Startech == startech && y.IsLeader))
-                       .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToListAsync();
+                       .Select(x => new UserObject { Id = x.Id, UserName = x.UserName, NumberOfpoints = x.NumberOfPoints }).ToListAsync();
             }
         }
 

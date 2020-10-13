@@ -9,6 +9,8 @@
                 <span class="oi oi-person mr-2" />@context.UserName
             </Template>
         </Column>
+        <Column TableItem="UserObject" Title="Starpoints" Field="@(x => x.NumberOfpoints)" Sortable="true" Filterable="true" >
+        </Column>
         <Column TableItem="UserObject" Title="" Width="120px" Align="Align.Center">
             <Template>
                 <button class="btn btn-outline-primary" @onclick="@(() => View(context))" ><span class="oi oi-eye mr-2" />view</button>

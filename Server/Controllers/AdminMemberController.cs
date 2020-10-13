@@ -53,7 +53,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         public async Task<IList<UserObject>> GetMembers(Startechs startechType)
         {
             return await dbContext.Users.Where(x => x.Startechs.Any(y => y.Startech == startechType && !y.IsLeader && x.Id == y.ApplicationUserId))
-                .Select(x => new UserObject { Id = x.Id, UserName = x.UserName }).ToListAsync();
+                .Select(x => new UserObject { Id = x.Id, UserName = x.UserName, NumberOfpoints = x.NumberOfPoints}).ToListAsync();
         }
 
         public async Task<IActionResult> SetMember(Startechs startechType, int userId)
