@@ -63,12 +63,18 @@ namespace Blazor.Startechmanager.Server.Controllers
                 {
                     throw new UserControllerException("you don't have the right to view this");
                 }
-                
             }
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             return new UserObject { Id = user.Id, UserName = user.UserName, NumberOfpoints = user.NumberOfPoints };
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+        }
+
+        [Authorize(Policy = StartechPolicyHelper.AllStartechLeader)]
+        public async Task<IList<Startechs>?> GetUserStartechs(int userId)
+        {
+            var user = await dbContext.Users.Include(x => x.Startechs).FirstOrDefaultAsync(x => x.Id == userId);
+            return user?.Startechs.Select(x => x.Startech).Where(x => CallerIsLeaderOf(x)).ToList();
         }
 
         private bool CallerIsLeaderOf(Startechs startech)

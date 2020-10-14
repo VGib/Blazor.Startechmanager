@@ -99,7 +99,7 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             AuthorizeLeader();
             var target = Create();
-            Action action = () =>  target.GetUser(User.Id).GetAwaiter().GetResult();
+            Action action = () => target.GetUser(User.Id).GetAwaiter().GetResult();
             action.Should().Throw<UserControllerException>();
         }
 
@@ -110,6 +110,15 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var target = Create();
             var user = await target.GetUser(ThisUser.Id);
             user.Id.Should().Be(User.Id);
+        }
+
+        [Test]
+        public async Task GetUserStartechs_return_only_startech_for_which_caller_is_startech_leader()
+        {
+            AuthorizeLeader();
+            var target = Create();
+            var startechs = await target.GetUserStartechs(MemberDotnet.Id);
+            startechs.Should().BeEquivalentTo(Startechs.Dotnet);
         }
     }
 }
