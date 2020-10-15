@@ -1,0 +1,25 @@
+﻿@page "/"
+@page "/Points/{UserId:int}"
+@using BlazorTable
+@if (!IsLoad)
+{
+    <h1>Loading, please wait ... </h1>
+}
+else
+{
+    <div>
+        Name: @User?.UserName <br />
+        Number of points: @User?.NumberOfpoints <br />
+    </div>
+
+    <Table TableItem="StarpointsItem" Items="Items" PageSize="100">
+        <Column TableItem="StarpointsItem" Field="@(x => x.Date)" Format="d" Sortable="true" Filterable="true" Title="Date" ></Column>
+        <Column TableItem="StarpointsItem" Field="@(x => x.Startech)" Sortable="true" Filterable="true" Title="Startech" ></Column>
+        <Column TableItem="StarpointsItem" Field="@(x => x.StarpointsTypeId)" Title="Type"  >
+            <Template>
+                @context.Type?.TypeName
+            </Template>
+        </Column>
+        <Column TableItem="StarpointsItem" Field="(x => x.NumberOfPoints)" Sortable="true" Filterable="true" Title="Points" ></Column>
+    </Table>
+}

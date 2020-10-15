@@ -20,6 +20,11 @@ namespace Blazor.Startechmanager.Client.Pages
 
         [Inject]
         public IMessageDisplayer MessageDisplayer { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+
 #nullable enable
 
         public List<UserObject> Members { get; set; }
@@ -47,7 +52,7 @@ namespace Blazor.Startechmanager.Client.Pages
 
         public async Task View(UserObject user)
         {
-            throw new NotImplementedException("to do");
+            NavigationManager.NavigateTo($"Points/{user.Id}");
         }
 
         public async Task Remove(UserObject user)
