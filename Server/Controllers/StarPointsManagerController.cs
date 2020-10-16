@@ -3,7 +3,6 @@ using Blazor.Startechmanager.Server.Models;
 using Blazor.Startechmanager.Shared.Constants;
 using Blazor.Startechmanager.Shared.Models;
 using Blazor.Startechmanager.Shared.Policies;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -50,12 +49,12 @@ namespace Blazor.Startechmanager.Server.Controllers
             return await dbContext.StarpointsType.Where(x => x.IsActive).ToListAsync();
         }
 
-        public async Task<IList<StarpointsItem>> GetStarpoints( [FromRoute] int userId ,[FromQuery] TimeSpan? history )
+        public async Task<IList<StarpointsItem>> GetStarpoints([FromRoute] int userId, [FromQuery] TimeSpan? history)
         {
             var historyWithDefault = DateTime.Now.Add(-history ?? TimeSpan.FromDays(-730));
-            ( var userToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
+            (var userToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
 
-            if(!isLeader)
+            if (!isLeader)
             {
                 startechs = GetAllStartechs();
             }
@@ -70,11 +69,11 @@ namespace Blazor.Startechmanager.Server.Controllers
             return await dbContext.StarpointsItem.Where(x => startechs.Contains(x.Startech) && x.ValidationState == ValidationState.InStudy).ToListAsync();
         }
 
-        public async Task<IActionResult> CreateStarpoints([FromRoute] int userId, [FromBody] StarpointsItem itemToCreate )
+        public async Task<IActionResult> CreateStarpoints([FromRoute] int userId, [FromBody] StarpointsItem itemToCreate)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-               return BadRequest($"your model is not valid :: {ModelState.GetNonValidationErrorMessage()}");
+                return BadRequest($"your model is not valid :: {ModelState.GetNonValidationErrorMessage()}");
             }
 
             (var userToDealWith, var startechs, var isLeader) = await GetStartechsToStudyForUser(userId);
@@ -103,7 +102,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
             else
             {
-                if(itemToCreate.Type != null && starpointTypeToCreate is null)
+                if (itemToCreate.Type != null && starpointTypeToCreate is null)
                 {
                     return BadRequest($"the type {itemToCreate.Type.TypeName} don't exist");
                 }
@@ -118,9 +117,9 @@ namespace Blazor.Startechmanager.Server.Controllers
         }
 
         [Route("{itemToUpdateId:int}/{newStatus}")]
-        public async Task<IActionResult> UpdateValidationStatus( [FromRoute] int itemToUpdateId, [FromRoute] ValidationState newStatus)
+        public async Task<IActionResult> UpdateValidationStatus([FromRoute] int itemToUpdateId, [FromRoute] ValidationState newStatus)
         {
-            StarpointsItem? itemToUpdate = await GetItem(itemToUpdateId);
+            StarpointsItem? itemToUpdate = await GetThisItem(itemToUpdateId);
 
             if (itemToUpdate is null)
             {
@@ -152,9 +151,23 @@ namespace Blazor.Startechmanager.Server.Controllers
             return Ok();
         }
 
-        private async Task<StarpointsItem> GetItem(int itemToUpdateId)
+        [Route("{itemId:int}")]
+        public async Task<StarpointsItem> GetItem(int itemId)
         {
-            return await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemToUpdateId);
+            var item = await GetThisItem(itemId);
+            var thisUser = await GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
+
+            if(item.ApplicationUserId != thisUser.Id && !thisUser.Startechs.Any(x => x.Startech == item.Startech))
+            {
+                throw new StarpointManagerException($"you don't have right to view item {itemId}");
+            }
+
+            return item;
+        }
+
+        private async Task<StarpointsItem> GetThisItem(int itemId)
+        {
+            return await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
         public async Task<IActionResult> UpdateStarpoints([FromBody] StarpointsItem starpointToUpdate)
@@ -164,7 +177,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                 return BadRequest($"starpoint item is invalid: {ModelState.GetNonValidationErrorMessage()}");
             }
 
-            var inDatatabaseStarpointToUpdate =  await GetItem(starpointToUpdate.Id);
+            var inDatatabaseStarpointToUpdate =  await GetThisItem(starpointToUpdate.Id);
 
             if(inDatatabaseStarpointToUpdate is null)
             {
@@ -223,7 +236,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         [Route("{itemToCancelId:int}")]
         public async Task<IActionResult> CancelStarpoints(int itemToCancelId)
         {
-            var itemToCancel = await GetItem(itemToCancelId);
+            var itemToCancel = await GetThisItem(itemToCancelId);
 
             if(itemToCancel is null)
             {

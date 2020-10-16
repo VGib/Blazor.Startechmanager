@@ -20,6 +20,7 @@ namespace Blazor.startechmanager.Client.UnitTests
     {
         public Mock<IMessageDisplayer> MessageDisplayer { get; set; }
 
+
         public ComponentParameter StartechType { get; set; } = ComponentParameterFactory.Parameter("StartechType", "Dotnet");
 
         [SetUp]
