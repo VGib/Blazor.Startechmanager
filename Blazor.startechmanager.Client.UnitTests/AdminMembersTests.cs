@@ -13,6 +13,7 @@ using System.Linq;
 using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+using Microsoft.AspNetCore.Components;
 
 namespace Blazor.startechmanager.Client.UnitTests
 {
@@ -20,6 +21,7 @@ namespace Blazor.startechmanager.Client.UnitTests
     {
         public Mock<IMessageDisplayer> MessageDisplayer { get; set; }
 
+        public Mock<NavigationManager> NavigationManager { get; set; }
 
         public ComponentParameter StartechType { get; set; } = ComponentParameterFactory.Parameter("StartechType", "Dotnet");
 
