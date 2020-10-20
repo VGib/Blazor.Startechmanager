@@ -1,4 +1,5 @@
-﻿using Blazor.Startechmanager.Server.Controllers;
+﻿using AutoMapper;
+using Blazor.Startechmanager.Server.Controllers;
 using Blazor.Startechmanager.Server.Models;
 using Blazor.Startechmanager.Shared.Models;
 using Blazor.Startechmanager.Shared.Policies;
@@ -117,10 +118,12 @@ namespace Blazor.Startechmanager.Server.UnitTests
             DbContext.Add(Presentation);
             DbContext.Add(NonActiveType);
 
+            var configuration = new MapperConfiguration(cfg => cfg.CreateMap<ApplicationUser, ApplicationUser>());
+            var mapper = configuration.CreateMapper();
 
-            DbContext.Add(LeaderDotnet);
-            DbContext.Add(MemberDotnet);
-            DbContext.Add(User);
+            DbContext.Add(mapper.Map<ApplicationUser>(LeaderDotnet));
+            DbContext.Add(mapper.Map<ApplicationUser>(MemberDotnet));
+            DbContext.Add(mapper.Map<ApplicationUser>(User));
 
 
             DbContext.Add(new StarpointsItem
