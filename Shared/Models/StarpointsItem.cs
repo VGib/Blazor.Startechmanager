@@ -24,8 +24,25 @@ namespace Blazor.Startechmanager.Shared.Models
 
         public ValidationState ValidationState { get; set; }
 
+        [StarpointItemJustficationValidation]
         public string? UrlJustification { get; set; }
 
+        [StarpointItemJustficationValidation]
         public string? TextJustification { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class StarpointItemJustficationValidationAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (validationContext.ObjectInstance is StarpointsItem starpointItem && string.IsNullOrWhiteSpace(starpointItem.TextJustification)
+                && string.IsNullOrWhiteSpace(starpointItem.UrlJustification))
+            {
+                return new ValidationResult("A justification is need", new[] { nameof(StarpointsItem.TextJustification), nameof(StarpointsItem.UrlJustification) });
+            }
+
+            return ValidationResult.Success;
+        }
     }
 }
