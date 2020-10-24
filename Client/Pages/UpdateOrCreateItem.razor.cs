@@ -6,6 +6,7 @@ using Blazor.Startechmanager.Shared.Policies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +37,11 @@ namespace Blazor.Startechmanager.Client.Pages
 
         [Inject]
         public IMessageDisplayer MessageDisplayer  { get; set; }
+
 #nullable enable
         public bool IsLoad { get; set; } = false;
 
         public bool IsNew { get; set; }
-
-        public bool IsLeader { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public IList<StarpointsType> ItemTypes { get; set; }
@@ -53,6 +53,14 @@ namespace Blazor.Startechmanager.Client.Pages
         public IList<Startechs> AvailableStartechs { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        public bool IsLeader
+        {
+            get
+            {
+                return IsMemberOrLeaderOf(Item?.Startech ?? Startechs.Agile).GetAwaiter().GetResult();
+            }
+        }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -61,7 +69,6 @@ namespace Blazor.Startechmanager.Client.Pages
             {
                 IsNew = true;
                 Item = new StarpointsItem();
-                IsLeader = UserId != ThisUser.Id;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 LoadForNewItem(UserId);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -111,7 +118,6 @@ namespace Blazor.Startechmanager.Client.Pages
         {
             Item = await HttpClient.GetFromJsonAsync<StarpointsItem>($"StarpointsManager/GetItem/-1/{itemId}");
             User = await GetUser(Item.ApplicationUserId);
-            IsLeader = await IsMemberOrLeaderOf(Item.Startech);
             await LoadItemTypes();
             IsLoad = true;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -126,12 +132,19 @@ namespace Blazor.Startechmanager.Client.Pages
 
         private async Task<bool> IsMemberOrLeaderOf(Startechs startech, bool isLeader = true)
         {
+            if(!Enum.IsDefined(typeof(Startechs), startech))
+            {
+                return false;
+            }
+
             var authentificationState = await AuthentificationProvider.GetAuthenticationStateAsync();
             return (await AuthorizationService.AuthorizeAsync(authentificationState.User, StartechPolicyHelper.GetPolicyName(startech, isLeader))).Succeeded;
         }
 
-        public void OnTypeChanged()
+        public void OnTypeChanged(ChangeEventArgs args)
         {
+            int typeIdFromArgsValue = int.Parse(args.Value as string);
+            Item.Type = ItemTypes.FirstOrDefault(x => x.Id == typeIdFromArgsValue);
             Item.NumberOfPoints = Item.Type?.NumberOfPoint ?? 0;
         }
 

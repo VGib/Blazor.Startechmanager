@@ -7,41 +7,54 @@
 else
 {
     <h1>@(IsNew ? "Create Item" : "Update Item") for @User.UserName</h1>
-    <div>
-        <EditForm Model="Item"  OnValidSubmit="UpdateOrCreate" >
+    <EditForm Model="Item" OnValidSubmit="UpdateOrCreate">
+        <div class="form-group">
             <DataAnnotationsValidator></DataAnnotationsValidator>
-            @if(IsLeader)
+            <div>
+                <label>Number of points:</label>
+                @if (IsLeader)
+                {
+                    <input type="number" @bind="Item.NumberOfPoints" class="form-control"></input>
+                }
+                else
+                {
+                    <span>@Item.NumberOfPoints</span>
+                }
+            </div>
+            @if (IsNew)
             {
-            <span>InputNumber of points:<InputNumber @bind-Value="Item.NumberOfPoints"></InputNumber></span>
-            }
-            else
-            {
-                <span>Number of points: @Item.NumberOfPoints</span>
-            }
-            <br/>
-            @if(IsNew)
-            {
-                <span>Startech: <InputSelect @bind-Value="Item.Startech">
-                     @foreach(var startech in AvailableStartechs)
-                     {
-                         <option value="@startech">@startech</option>
-                     }
-                     </InputSelect></span>
-            }
-            Type: <InputSelect  @bind-Value="Item.Type" @ValueChanged="OnTypeChanged">
-            @if(IsLeader)
-            {
-                <option @value="null">No Type</option>
-            }
-            @foreach (StarpointsType itemType in ItemTypes)
-            {
-                <option @value="itemType" >@itemType.TypeName</option>
-            }
-            </InputSelect>
-            <br />
-            Url Justification: <InputText @bind-Value="Item.UrlJustification" /> <br/>
-            Text Justification: <InputText @bind-Value="Item.TextJustification" /><br/>
-        </EditForm>
-    </div>
+                <div>
+                    <label>Startech:</label><select @bind="Item.Startech" class="form-control">
+                        @foreach (var startech in AvailableStartechs)
+                                {
+                            <option value="@startech">@startech</option>
+                                }
+                    </select>
 
-}
+                </div>
+            }
+            <div>
+                <label>Type: </label><select value="@Item.Type" @onchange="OnTypeChanged" class="form-control">
+                    @if (IsLeader)
+                        {
+                        <option value="n">No Type</option>
+                        }
+                    @foreach (var itemType in ItemTypes)
+                        {
+                        <option value="@itemType.Id">@itemType.TypeName</option>
+                        }
+                </select>
+            </div>
+            <div>
+                <label>Url Justification:</label>
+                <input @bind="Item.UrlJustification" class="form-control" />
+            </div>
+            <div>
+                <label>Text Justification:</label>
+                <textarea @bind="Item.TextJustification" class="form-control" />
+            </div>
+        </div>
+    </EditForm>
+            
+
+        }

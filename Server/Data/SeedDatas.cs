@@ -19,32 +19,72 @@ namespace Blazor.Startechmanager.Server.Data
             var provider = builder.ApplicationServices;
             var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
 
-            using (var scope = scopeFactory.CreateScope())
-            using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
+            using var scope = scopeFactory.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            if (!dbContext.Roles.Any())
             {
-
-
-                if (!dbContext.Roles.Any())
+                var adminRole = new ApplicationRole
                 {
-                    var adminRole = new ApplicationRole
-                    {
-                        Name = Roles.Admin,
-                        NormalizedName = Roles.Admin
-                    };
-                    await CreateRole(dbContext, adminRole);
-                }
-
-                if (!dbContext.Users.Any())
-                {
-                    await AddAdmin(dbContext);
-                    await AddStartechLeaders(dbContext);
-                    await AddStartechMembers(dbContext);
-                    await AddUsers(dbContext);
-                }
-
-                dbContext.SaveChanges();
+                    Name = Roles.Admin,
+                    NormalizedName = Roles.Admin
+                };
+                await CreateRole(dbContext, adminRole);
             }
 
+            if (!dbContext.Users.Any())
+            {
+                await AddAdmin(dbContext);
+                await AddStartechLeaders(dbContext);
+                await AddStartechMembers(dbContext);
+                await AddUsers(dbContext);
+            }
+
+            if (!dbContext.StarpointsType.Any())
+            {
+                AddStarpointsTypes(dbContext);
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        private static void AddStarpointsTypes(ApplicationDbContext dbContext)
+        {
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Course",
+                NumberOfPoint = 150,
+                IsActive = true
+            });
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Easy blog article",
+                NumberOfPoint = 15,
+                IsActive = true
+            });
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Medium blog article",
+                NumberOfPoint = 50,
+                IsActive = true
+            });
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Long blog article",
+                NumberOfPoint = 80,
+                IsActive = true
+            });
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Meeting presentation",
+                NumberOfPoint = 70,
+                IsActive = true
+            });
+            dbContext.Add(new StarpointsType
+            {
+                TypeName = "Event presentation",
+                NumberOfPoint = 200,
+                IsActive = true
+            });
         }
 
         private static async Task AddAdmin(ApplicationDbContext dbContext)
@@ -115,8 +155,10 @@ namespace Blazor.Startechmanager.Server.Data
 
         private static async Task AddStartechMembers(ApplicationDbContext dbContext)
         {
-          foreach(Startechs startech in  Enum.GetValues(typeof(Startechs)))
-          for(int n = 1; n <= 5; ++n)
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+            foreach (Startechs startech in  Enum.GetValues(typeof(Startechs)))
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+                for (int n = 1; n <= 5; ++n)
             {
                 var member = new ApplicationUser
                 {
@@ -153,7 +195,6 @@ namespace Blazor.Startechmanager.Server.Data
 
                 await SetPasswordModel(member, dbContext);
             }
-                
         }
 
         private static async Task CreateRole(ApplicationDbContext dbContext, ApplicationRole adminRole)
