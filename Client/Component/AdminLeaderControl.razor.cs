@@ -1,4 +1,5 @@
-﻿using Blazor.Startechmanager.Client.Services;
+﻿using Blazor.Startechmanager.Client.Helpers;
+using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -36,12 +37,10 @@ namespace Blazor.Startechmanager.Client.Component
 
         private async Task DoAction(string action)
         {
-            var result = await HttpClient.GetAsync(action);
-            if (!result?.IsSuccessStatusCode ?? false)
-            {
-                await MessageDisplayer.DisplayErrorMessage(await result.Content.ReadAsStringAsync());
-            }
+            await HttpClient.DoActionByGetMethod(action, messageDisplayer: MessageDisplayer);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             LoadClients();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         protected override void OnInitialized()

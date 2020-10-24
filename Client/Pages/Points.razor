@@ -10,6 +10,7 @@ else
     <div>
         Name: @User?.UserName <br />
         Number of points: @User?.NumberOfpoints <br />
+        Create: <NavLink href="@("/NewItem/" +  UserId.ToString() )" Match="NavLinkMatch.All" >Create new</NavLink>
     </div>
 
     <Table TableItem="StarpointsItem" Items="Items" PageSize="100">

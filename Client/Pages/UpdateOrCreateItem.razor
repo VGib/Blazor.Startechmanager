@@ -1,0 +1,47 @@
+﻿@page "/NewItem/{UserId:int}"
+@page "/UpdateItem/{ItemId:int}"
+@if (!IsLoad)
+{
+    <h1>loading ....</h1>
+}
+else
+{
+    <h1>@(IsNew ? "Create Item" : "Update Item") for @User.UserName</h1>
+    <div>
+        <EditForm Model="Item"  OnValidSubmit="UpdateOrCreate" >
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            @if(IsLeader)
+            {
+            <span>InputNumber of points:<InputNumber @bind-Value="Item.NumberOfPoints"></InputNumber></span>
+            }
+            else
+            {
+                <span>Number of points: @Item.NumberOfPoints</span>
+            }
+            <br/>
+            @if(IsNew)
+            {
+                <span>Startech: <InputSelect @bind-Value="Item.Startech">
+                     @foreach(var startech in AvailableStartechs)
+                     {
+                         <option value="@startech">@startech</option>
+                     }
+                     </InputSelect></span>
+            }
+            Type: <InputSelect  @bind-Value="Item.Type" @ValueChanged="OnTypeChanged">
+            @if(IsLeader)
+            {
+                <option @value="null">No Type</option>
+            }
+            @foreach (StarpointsType itemType in ItemTypes)
+            {
+                <option @value="itemType" >@itemType.TypeName</option>
+            }
+            </InputSelect>
+            <br />
+            Url Justification: <InputText @bind-Value="Item.UrlJustification" /> <br/>
+            Text Justification: <InputText @bind-Value="Item.TextJustification" /><br/>
+        </EditForm>
+    </div>
+
+}
