@@ -8,9 +8,8 @@ else
 {
     <h1>@(IsNew ? "Create Item" : "Update Item") for @User.UserName</h1>
     <EditForm Model="Item" OnValidSubmit="UpdateOrCreate">
-        <div class="form-group">
             <DataAnnotationsValidator></DataAnnotationsValidator>
-            <div>
+            <div class="form-group">
                 <label>Number of points:</label>
                 @if (IsLeader)
                 {
@@ -20,40 +19,47 @@ else
                 {
                     <span>@Item.NumberOfPoints</span>
                 }
+                <ValidationMessage For="@(() => Item.NumberOfPoints)" />
             </div>
             @if (IsNew)
             {
-                <div>
+                <div class="form-group">
                     <label>Startech:</label><select @bind="Item.Startech" class="form-control">
                         @foreach (var startech in AvailableStartechs)
                                 {
                             <option value="@startech">@startech</option>
                                 }
                     </select>
-
+              <ValidationMessage For="@(() => Item.Startech)" />
                 </div>
             }
+    <div class="form-group">
+        <label>Type: </label><select value="@(Item.Type?.Id ?? 0)" @onchange="OnTypeChanged" class="form-control">
+            @if (IsLeader)
+            {
+                <option value="n">No Type</option>
+            }
+            @foreach (var itemType in ItemTypes)
+            {
+                <option value="@itemType.Id">@itemType.TypeName</option>
+            }
+        </select>
+        <ValidationMessage For="@(() => Item.Type)" />
+    </div>
+    <div class="form-group">
+        <label>Url Justification:</label>
+        <input @bind="Item.UrlJustification" class="form-control" />
+        <ValidationMessage For="@(() => Item.UrlJustification)" />
+    </div>
+    <div class="form-group">
+        <label>Text Justification:</label>
+        <textarea @bind="Item.TextJustification" class="form-control" />
+        <ValidationMessage For="@(() => Item.TextJustification)" />
+    </div>
             <div>
-                <label>Type: </label><select value="@Item.Type" @onchange="OnTypeChanged" class="form-control">
-                    @if (IsLeader)
-                        {
-                        <option value="n">No Type</option>
-                        }
-                    @foreach (var itemType in ItemTypes)
-                        {
-                        <option value="@itemType.Id">@itemType.TypeName</option>
-                        }
-                </select>
+                <button type="submit" class="btn btn-outline-primary">Validate</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="ReturnToStarpointItemsList" >Cancel</button>
             </div>
-            <div>
-                <label>Url Justification:</label>
-                <input @bind="Item.UrlJustification" class="form-control" />
-            </div>
-            <div>
-                <label>Text Justification:</label>
-                <textarea @bind="Item.TextJustification" class="form-control" />
-            </div>
-        </div>
     </EditForm>
             
 

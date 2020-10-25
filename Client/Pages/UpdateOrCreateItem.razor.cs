@@ -38,6 +38,9 @@ namespace Blazor.Startechmanager.Client.Pages
         [Inject]
         public IMessageDisplayer MessageDisplayer  { get; set; }
 
+        [Inject]
+        public  NavigationManager NavigationManager { get; set; }
+
 #nullable enable
         public bool IsLoad { get; set; } = false;
 
@@ -68,7 +71,6 @@ namespace Blazor.Startechmanager.Client.Pages
             if (UserId != default)
             {
                 IsNew = true;
-                Item = new StarpointsItem();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 LoadForNewItem(UserId);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -87,6 +89,10 @@ namespace Blazor.Startechmanager.Client.Pages
 
         private async Task LoadForNewItem(int userId)
         {
+            Item = new StarpointsItem()
+            {
+                ValidationState = ValidationState.InStudy
+            };
             User = await GetUser(userId);
             Item.ApplicationUserId = User.Id;
             await LoadItemTypes();
@@ -158,6 +164,13 @@ namespace Blazor.Startechmanager.Client.Pages
             {
                 await HttpClient.DoActionByPost($"StarpointsManager/UpdateStarpoints/{UserId}", Item, MessageDisplayer);
             }
+            ReturnToStarpointItemsList();    
+        }
+        
+        public void ReturnToStarpointItemsList()
+        {
+            var userIdToNavigate = IsLeader ? User.Id : ThisUser.Id;
+            NavigationManager.NavigateTo($"/Points/{ userIdToNavigate }");
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                 startechs = GetAllStartechs();
             }
 
-            return await dbContext.StarpointsItem.Where(x => x.ApplicationUserId == userToDealWith.Id && startechs.Contains(x.Startech))
+            return await dbContext.StarpointsItem.Include(x => x.Type).Where(x => x.ApplicationUserId == userToDealWith.Id && startechs.Contains(x.Startech))
                         .Where(x => x.Date > historyWithDefault).ToListAsync();
         }
 
@@ -88,7 +88,7 @@ namespace Blazor.Startechmanager.Server.Controllers
 #pragma warning disable CS8604 // Possible null reference argument.
             StarpointsType? starpointTypeToCreate = await GetStarpointType(itemToCreate.Type);
 #pragma warning restore CS8604 // Possible null reference argument.
-            itemToCreate.StarpointsTypeId = starpointTypeToCreate?.Id;
+            itemToCreate.Type = starpointTypeToCreate;
             itemToCreate.ValidationState = isLeader ? ValidationState.Validated : ValidationState.InStudy;
             itemToCreate.Date = DateTime.Now;
 
@@ -209,7 +209,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                 var starpointType = await GetStarpointType(starpointToUpdate.Type);
                 if(starpointType?.Id != inDatatabaseStarpointToUpdate.StarpointsTypeId)
                 {
-                    inDatatabaseStarpointToUpdate.StarpointsTypeId = starpointType?.Id;
+                    inDatatabaseStarpointToUpdate.Type = starpointType;
                 }
             }
 

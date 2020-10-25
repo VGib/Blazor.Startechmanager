@@ -46,7 +46,7 @@ namespace Blazor.Startechmanager.Shared.Models
             if (validationContext.ObjectInstance is StarpointsItem starpointItem && string.IsNullOrWhiteSpace(starpointItem.TextJustification)
                 && string.IsNullOrWhiteSpace(starpointItem.UrlJustification))
             {
-                return new ValidationResult("A justification is need", new[] { nameof(StarpointsItem.TextJustification), nameof(StarpointsItem.UrlJustification) });
+                return new ValidationResult("A justification is need", new[] { validationContext.MemberName });
             }
 
             return ValidationResult.Success;
@@ -60,7 +60,7 @@ namespace Blazor.Startechmanager.Shared.Models
         {
             if(value is int intValue && intValue == 0)
             {
-                return new ValidationResult("value should not be 0");
+                return new ValidationResult("value should not be 0", new[] { validationContext.MemberName });
             }
 
             return ValidationResult.Success;
@@ -82,7 +82,7 @@ namespace Blazor.Startechmanager.Shared.Models
             {
                 if (!Enum.IsDefined(valueType, value))
                 {
-                    return new ValidationResult($"value type {value} is not a defined value for enum {valueType.Name}");
+                    return new ValidationResult($"value type {value} is not a defined value for enum {valueType.Name}", new[] { validationContext.MemberName });
                 }
 
                 return ValidationResult.Success;
