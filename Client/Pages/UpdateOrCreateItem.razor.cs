@@ -168,13 +168,14 @@ namespace Blazor.Startechmanager.Client.Pages
 
         public async void UpdateOrCreate()
         {
+            var userId = IsLeader ? User.Id : ThisUser.Id;
             if(IsNew)
             {
-                await HttpClient.DoActionByPost($"StarpointsManager/CreateStarpoints/{UserId}", Item, MessageDisplayer);
+                await HttpClient.DoActionByPost($"StarpointsManager/CreateStarpoints/{userId}", Item, MessageDisplayer);
             }
             else
             {
-                await HttpClient.DoActionByPost($"StarpointsManager/UpdateStarpoints/{UserId}", Item, MessageDisplayer);
+                await HttpClient.DoActionByPost($"StarpointsManager/UpdateStarpoints/{userId}", Item, MessageDisplayer);
             }
             await ReturnToStarpointItemsList();    
         }
