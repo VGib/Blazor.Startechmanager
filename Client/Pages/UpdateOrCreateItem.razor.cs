@@ -107,7 +107,7 @@ namespace Blazor.Startechmanager.Client.Pages
         {
             if(UserId == ThisUser.Id)
             {
-                AvailableStartechs = Enum.GetValues(typeof(Startechs)).Cast<Startechs>().Where(x => IsMemberOrLeaderOf(x).GetAwaiter().GetResult()).ToArray();
+                AvailableStartechs = Enum.GetValues(typeof(Startechs)).Cast<Startechs>().Where(x => IsMemberOrLeaderOf(x, false).GetAwaiter().GetResult()).ToArray();
             }
             else
             {
