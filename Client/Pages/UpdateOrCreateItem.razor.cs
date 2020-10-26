@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Client.Pages
@@ -54,13 +55,15 @@ namespace Blazor.Startechmanager.Client.Pages
         public StarpointsItem  Item { get; set; }
 
         public IList<Startechs> AvailableStartechs { get; set; }
+
+        public IList<Startechs> StartechWhichCurrentUserIsLeader { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         public bool IsLeader
         {
             get
             {
-                return IsMemberOrLeaderOf(Item?.Startech ?? Startechs.Agile).GetAwaiter().GetResult();
+                return StartechWhichCurrentUserIsLeader.Any(x => Item.Startech == x);
             }
         }
 
@@ -107,12 +110,21 @@ namespace Blazor.Startechmanager.Client.Pages
         {
             if(UserId == ThisUser.Id)
             {
-                AvailableStartechs = Enum.GetValues(typeof(Startechs)).Cast<Startechs>().Where(x => IsMemberOrLeaderOf(x, false).GetAwaiter().GetResult()).ToArray();
+                AvailableStartechs = await GetStartechWhichMemberOrLeader(false);
             }
             else
             {
                 AvailableStartechs = await HttpClient.GetFromJsonAsync<IList<Startechs>>($"User/GetUserStartechs/{User.Id}");
             }
+
+            StartechWhichCurrentUserIsLeader = await GetStartechWhichMemberOrLeader(true);
+        }
+
+        private async Task<IList<Startechs>> GetStartechWhichMemberOrLeader(bool isLeader)
+        {
+            var startechs = new List<Startechs>();
+            foreach (Startechs startech in Enum.GetValues(typeof(Startechs))) if (await IsMemberOrLeaderOf(startech, isLeader)) startechs.Add(startech);
+            return startechs;
         }
 
         private  Task<UserObject> GetUser(int userId)
@@ -164,13 +176,19 @@ namespace Blazor.Startechmanager.Client.Pages
             {
                 await HttpClient.DoActionByPost($"StarpointsManager/UpdateStarpoints/{UserId}", Item, MessageDisplayer);
             }
-            ReturnToStarpointItemsList();    
+            await ReturnToStarpointItemsList();    
         }
         
-        public void ReturnToStarpointItemsList()
+        public async Task ReturnToStarpointItemsList()
         {
-            var userIdToNavigate = IsLeader ? User.Id : ThisUser.Id;
+            var userIdToNavigate = (await  IsThisUser()) ? User.Id : ThisUser.Id;
             NavigationManager.NavigateTo($"/Points/{ userIdToNavigate }");
+        }
+
+        private async Task<bool> IsThisUser()
+        {
+            var thisUser = await HttpClient.GetFromJsonAsync<UserObject>("User/GetUser/-1");
+            return thisUser.Id == User.Id;
         }
     }
 }
