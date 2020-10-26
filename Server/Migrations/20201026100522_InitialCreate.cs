@@ -235,7 +235,7 @@ namespace Blazor.Startechmanager.Server.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     NumberOfPoints = table.Column<int>(nullable: false),
                     Startech = table.Column<int>(nullable: false),
-                    StarpointsTypeId = table.Column<int>(nullable: false),
+                    StarpointsTypeId = table.Column<int>(nullable: true),
                     ValidationState = table.Column<int>(nullable: false),
                     UrlJustification = table.Column<string>(nullable: true),
                     TextJustification = table.Column<string>(nullable: true)
@@ -248,7 +248,7 @@ namespace Blazor.Startechmanager.Server.Migrations
                         column: x => x.StarpointsTypeId,
                         principalTable: "StarpointsType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blazor.Startechmanager.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200929095308_InitialCreate")]
+    [Migration("20201026100522_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -159,7 +159,7 @@ namespace Blazor.Startechmanager.Server.Migrations
                     b.Property<int>("NumberOfPoints")
                         .HasColumnType("int");
 
-                    b.Property<int>("StarpointsTypeId")
+                    b.Property<int?>("StarpointsTypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("Startech")
@@ -399,9 +399,7 @@ namespace Blazor.Startechmanager.Server.Migrations
                 {
                     b.HasOne("Blazor.Startechmanager.Shared.Models.StarpointsType", "Type")
                         .WithMany()
-                        .HasForeignKey("StarpointsTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StarpointsTypeId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
