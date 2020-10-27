@@ -37,6 +37,16 @@ namespace Common.UnitTests
 
                 ServiceCollection.AddTransient(toInjectProperty.PropertyType.GetGenericArguments()[0], _ => objectToInvoke);
             }
+
+            foreach(var property in this.GetType().GetProperties().Where(x => !x.PropertyType.IsGenericType  || x.PropertyType.GetGenericTypeDefinition() != typeof(Mock<>)))
+            {
+                var thisPropertyObject = property.GetGetMethod().Invoke(this, new object[0]);
+                if(thisPropertyObject != null)
+                {
+                    ServiceCollection.AddTransient(property.PropertyType, x => thisPropertyObject);
+                }
+            }
+
             ServiceCollection.AddTransient<T>();
         }
 
