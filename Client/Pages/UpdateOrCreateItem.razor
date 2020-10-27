@@ -2,14 +2,14 @@
 @page "/UpdateItem/{ItemId:int}"
 @if (!IsLoad)
 {
-    <h1>loading ....</h1>
+    <div><h1>loading ....</h1></div>
 }
 else
 {
-    <h1>@(IsNew ? "Create Item" : "Update Item") for @User.UserName</h1>
+    <div class="mb-4 mt-2"><h3>@(IsNew ? "Create Item" : "Update Item") for @User.UserName</h3></div>
     <EditForm Model="Item" OnValidSubmit="UpdateOrCreate">
             <DataAnnotationsValidator></DataAnnotationsValidator>
-            <div class="form-group">
+            <div class="form-group d-flex flex-column" >
                 <label>Number of points:</label>
                 @if (IsLeader)
                 {
@@ -56,9 +56,9 @@ else
         <textarea @bind="Item.TextJustification" class="form-control" />
         <ValidationMessage For="@(() => Item.TextJustification)" />
     </div>
-            <div>
-                <button type="submit" class="btn btn-outline-primary">Validate</button>
-                <button type="button" class="btn btn-outline-primary" @onclick="ReturnToStarpointItemsList" >Cancel</button>
+            <div class="d-flex justify-content-center" >
+                <button  type="submit" class="btn btn-outline-primary m-4">Validate</button>
+                <button type="button" class="btn btn-outline-primary m-4" @onclick="ReturnToStarpointItemsList" >Cancel</button>
             </div>
     </EditForm>
             
