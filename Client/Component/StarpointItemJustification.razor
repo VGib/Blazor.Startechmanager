@@ -1,0 +1,16 @@
+﻿@if(!string.IsNullOrWhiteSpace(Item.TextJustification) && !string.IsNullOrWhiteSpace(Item.UrlJustification))
+{
+    <div><a href="@Item.UrlJustification" ><span class="oi oi-eye mr-2" />view</a> (@Item.TextJustification)</div>
+}
+else if(!string.IsNullOrWhiteSpace(Item.UrlJustification))
+{
+    <div><a href="@Item.UrlJustification"><span class="oi oi-eye mr-2" />view</a></div>
+}
+else
+{
+    <div>@Item.TextJustification</div>
+}
+@code {
+    [Parameter]
+    public StarpointsItem Item { get; set; }
+}

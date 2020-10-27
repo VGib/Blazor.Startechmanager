@@ -21,6 +21,16 @@ else
                 @context.Type?.TypeName
             </Template>
         </Column>
+        <Column TableItem="StarpointsItem" Title="Justification">
+            <Template>
+                <StarpointItemJustification Item="context" />
+            </Template>
+        </Column>
+        <Column TableItem="StarpointsItem" Field="@(x => x.ValidationState)" Sortable="true" Filterable="true" Title="status">
+            <Template>
+                <StarpointItemStatus Item="context" />
+            </Template>
+        </Column>
         <Column TableItem="StarpointsItem" Field="(x => x.NumberOfPoints)" Sortable="true" Filterable="true" Title="Points" ></Column>
     </Table>
 }

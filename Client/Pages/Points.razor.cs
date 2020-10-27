@@ -26,6 +26,7 @@ namespace Blazor.Startechmanager.Client.Pages
         [Inject]
         public HttpClient HttpClient { get; set; }
 
+        public IList<Startechs> UserIsLeaderOfStartechs { get; set; }
         protected override void OnInitialized()
         {
             base.OnInitialized();
