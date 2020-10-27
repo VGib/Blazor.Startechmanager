@@ -26,6 +26,7 @@ namespace Blazor.Startechmanager.Client
             builder.Services.AddAuthorizationCore(configure => configure.AddAppicationPolicies());
 
             builder.Services.AddSingleton<IMessageDisplayer, MessageDisplayer>();
+            builder.Services.AddSingleton<IStartechAuthorizationService, StartechAuthorizationService>();
             builder.Services.AddStartechPoliciesHandler();
 
             await builder.Build().RunAsync();

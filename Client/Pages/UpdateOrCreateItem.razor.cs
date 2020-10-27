@@ -2,17 +2,12 @@
 using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Constants;
 using Blazor.Startechmanager.Shared.Models;
-using Blazor.Startechmanager.Shared.Policies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Blazor.Startechmanager.Client.Pages
@@ -29,18 +24,14 @@ namespace Blazor.Startechmanager.Client.Pages
         [Inject]
         public HttpClient HttpClient { get; set; }
 
-        // authorization: https://gist.github.com/SteveSandersonMS/175a08dcdccb384a52ba760122cd2eda
-        [Inject]
-        public AuthenticationStateProvider AuthentificationProvider { get; set; }
-
-        [Inject]
-        public IAuthorizationService  AuthorizationService { get; set; }
-
         [Inject]
         public IMessageDisplayer MessageDisplayer  { get; set; }
 
         [Inject]
         public  NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        public StartechAuthorizationService StartechAuthorizationService { get; set; }
 
 #nullable enable
         public bool IsLoad { get; set; } = false;
@@ -123,7 +114,7 @@ namespace Blazor.Startechmanager.Client.Pages
         private async Task<IList<Startechs>> GetStartechWhichMemberOrLeader(bool isLeader)
         {
             var startechs = new List<Startechs>();
-            foreach (Startechs startech in Enum.GetValues(typeof(Startechs))) if (await IsMemberOrLeaderOf(startech, isLeader)) startechs.Add(startech);
+            foreach (Startechs startech in Enum.GetValues(typeof(Startechs))) if (await StartechAuthorizationService.IsMemberOrLeaderOf(startech, isLeader)) startechs.Add(startech);
             return startechs;
         }
 
@@ -146,17 +137,6 @@ namespace Blazor.Startechmanager.Client.Pages
         private async Task LoadItemTypes()
         {
             ItemTypes = await HttpClient.GetFromJsonAsync<IList<StarpointsType>>("StarpointsManager/GetStarpointsType/-1");
-        }
-
-        private async Task<bool> IsMemberOrLeaderOf(Startechs startech, bool isLeader = true)
-        {
-            if(!Enum.IsDefined(typeof(Startechs), startech))
-            {
-                return false;
-            }
-
-            var authentificationState = await AuthentificationProvider.GetAuthenticationStateAsync();
-            return (await AuthorizationService.AuthorizeAsync(authentificationState.User, StartechPolicyHelper.GetPolicyName(startech, isLeader))).Succeeded;
         }
 
         public void OnTypeChanged(ChangeEventArgs args)
