@@ -88,7 +88,6 @@ namespace Blazor.Startechmanager.Server.Controllers
 #pragma warning disable CS8604 // Possible null reference argument.
             StarpointsType? starpointTypeToCreate = await GetStarpointType(itemToCreate.Type);
 #pragma warning restore CS8604 // Possible null reference argument.
-            itemToCreate.Type = starpointTypeToCreate;
             itemToCreate.ValidationState = isLeader ? ValidationState.Validated : ValidationState.InStudy;
             itemToCreate.Date = DateTime.Now;
 
@@ -98,6 +97,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                 {
                     return BadRequest("only startech leader can create starpoints from non typed startech");
                 }
+                itemToCreate.Type = starpointTypeToCreate;
                 itemToCreate.NumberOfPoints = starpointTypeToCreate.NumberOfPoint;
             }
             else
@@ -107,6 +107,7 @@ namespace Blazor.Startechmanager.Server.Controllers
                     return BadRequest($"the type {itemToCreate.Type.TypeName} don't exist");
                 }
 
+                itemToCreate.Type = starpointTypeToCreate;
                 userToDealWith.NumberOfPoints += itemToCreate.NumberOfPoints;
             }
 

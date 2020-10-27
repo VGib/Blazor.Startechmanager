@@ -1,1 +1,16 @@
-﻿todo
+﻿@switch(Item.ValidationState)
+{
+    case ValidationState.InStudy:
+        @if (IsLeaderOfItemStartech)
+        {
+            <span></span>
+        }
+        else
+        {
+            <div><span class="oi oi-cog mr-2"/>In Study</div>
+        }
+            break;
+        default:
+        <span>todo</span>
+        break;
+}
