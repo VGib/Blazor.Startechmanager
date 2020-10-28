@@ -269,6 +269,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             {
                 user.NumberOfPoints += numberOfPoints;
             }
+            dbContext.Entry(user).Property(x => x.NumberOfPoints).IsModified = true;
         }
 
         private async Task<StarpointsType> GetStarpointType(StarpointsType? type)

@@ -36,7 +36,7 @@ namespace Blazor.Startechmanager.Client.Component
 
         public async Task UpdateState(ValidationState state)
         {
-            var result = await HttpClient.DoActionByGetMethod("", MessageDisplayer);
+            var result = await HttpClient.DoActionByGetMethod($"StarpointsManager/UpdateValidationStatus/-1/{Item.Id}/{state}", MessageDisplayer);
             if(result == ActionStatus.Done)
             {
                 Item.ValidationState = state;
