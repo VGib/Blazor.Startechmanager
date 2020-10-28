@@ -31,7 +31,7 @@ namespace Blazor.Startechmanager.Client.Pages
         public  NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        public StartechAuthorizationService StartechAuthorizationService { get; set; }
+        public IStartechAuthorizationService StartechAuthorizationService { get; set; }
 
 #nullable enable
         public bool IsLoad { get; set; } = false;
@@ -162,7 +162,7 @@ namespace Blazor.Startechmanager.Client.Pages
         
         public async Task ReturnToStarpointItemsList()
         {
-            var userIdToNavigate = (await  IsThisUser()) ? User.Id : ThisUser.Id;
+            var userIdToNavigate = (await  IsThisUser()) ? ThisUser.Id : User.Id;
             NavigationManager.NavigateTo($"/Points/{ userIdToNavigate }");
         }
 
