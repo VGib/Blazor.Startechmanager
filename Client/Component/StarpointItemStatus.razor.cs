@@ -2,6 +2,7 @@
 using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -43,6 +44,11 @@ namespace Blazor.Startechmanager.Client.Component
                 InvokeAsync(StateHasChanged);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
+        }
+
+        public async Task CancelItem()
+        {
+            throw new NotImplementedException("to do");
         }
     }
 }
