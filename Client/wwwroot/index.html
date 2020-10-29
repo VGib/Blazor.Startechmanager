@@ -9,6 +9,7 @@
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet" />
     <link href="_content/Blazored.Typeahead/blazored-typeahead.css" rel="stylesheet" />
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
 </head>
 
@@ -20,27 +21,12 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <div class="modal" id="modal" style="display: none;" >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header"/>
-                    <h5 id="modalTitle" class="modal-title"></h5>
-                </div>
-                <div class="modal-body">
-                    <p id="modalContent"></p>
-                </div>
-                <div class="modal-footer"">
-                    <button type="button" class="btn btn-outline-primary col-6" data-dismiss="modal" id="modalClose">Close</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/Blazored.Typeahead/blazored-typeahead.js"></script>
     <script src="_content/BlazorTable/BlazorTable.min.js"></script>
-    <script src="js/modal.js" ></script>
+    <script src="_content/Blazored.Modal/blazored.modal.js"></script>
+    <script src="js/modal.js"></script>
 </body>
 
 </html>

@@ -28,7 +28,7 @@ else
         </Column>
         <Column TableItem="StarpointsItem" Field="@(x => x.ValidationState)" Sortable="true" Filterable="true" Title="status">
             <Template>
-                <StarpointItemStatus Item="context" />
+                <StarpointItemStatus Item="context" PleaseRemoveItem="DeleteItem" />
             </Template>
         </Column>
         <Column TableItem="StarpointsItem" Field="(x => x.NumberOfPoints)" Sortable="true" Filterable="true" Title="Points" ></Column>

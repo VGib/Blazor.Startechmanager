@@ -1,0 +1,20 @@
+﻿@using Blazored.Modal.Services;
+@using Blazored.Modal;
+@using Blazor.Startechmanager.Client.Services
+@inject IModalService ModalService
+
+<div>
+    <p>@Message</p>
+
+    <button @onclick="() => ModalInstance.Close(ModalResult.Ok((int)ConfirmDisplayerResult.Yes, typeof(int)))" class="btn btn-outline-primary">Yes</button>
+    <button @onclick="() => ModalInstance.Close(ModalResult.Ok((int)ConfirmDisplayerResult.No, typeof(int)))" class="btn btn-outline-primary">No</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+}

@@ -13,30 +13,32 @@ namespace Blazor.Startechmanager.Client.Pages
 {
     public partial class Points
     {
+#nullable disable
         [Parameter]
         public int UserId { get; set; } = ThisUser.Id;
+
+        public UserObject User { get; set; }
+
+        [Inject]
+        public HttpClient HttpClient { get; set; }
+#nullable enable
 
         public bool IsLoad { get; set; } = false;
 
         public List<StarpointsItem> Items = new List<StarpointsItem>();
 
-        public UserObject User { get; set; }
-
-
-        [Inject]
-        public HttpClient HttpClient { get; set; }
-
-        public IList<Startechs> UserIsLeaderOfStartechs { get; set; }
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            if(UserId == default(int))
+            if(UserId == default)
             {
                 UserId = ThisUser.Id;
             }
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Load();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public async Task Load ()
@@ -45,6 +47,14 @@ namespace Blazor.Startechmanager.Client.Pages
             Items = await HttpClient.GetFromJsonAsync<List<StarpointsItem>>($"StarpointsManager/GetStarpoints/{UserId}");
 
             IsLoad = true;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            InvokeAsync(StateHasChanged);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
+
+        public void DeleteItem(StarpointsItem item)
+        {
+            Items.Remove(item);
             InvokeAsync(StateHasChanged);
         }
     }

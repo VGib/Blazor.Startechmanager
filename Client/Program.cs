@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Policies;
+using Blazored.Modal;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +25,11 @@ namespace Blazor.Startechmanager.Client
 
             builder.Services.AddApiAuthorization();
             builder.Services.AddAuthorizationCore(configure => configure.AddAppicationPolicies());
+            builder.Services.AddBlazoredModal();
 
-            builder.Services.AddSingleton<IMessageDisplayer, MessageDisplayer>();
-            builder.Services.AddTransient<IStartechAuthorizationService, StartechAuthorizationService>();
+            builder.Services.AddScoped<IMessageDisplayer, MessageDisplayer>();
+            builder.Services.AddScoped<IConfirmDisplayer, ConfirmDisplayer>();
+            builder.Services.AddScoped<IStartechAuthorizationService, StartechAuthorizationService>();
             builder.Services.AddStartechPoliciesHandler();
 
             await builder.Build().RunAsync();

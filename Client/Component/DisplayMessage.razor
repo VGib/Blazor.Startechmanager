@@ -1,0 +1,19 @@
+﻿@using Blazored.Modal.Services;
+@using Blazored.Modal;
+@using Blazor.Startechmanager.Client.Services
+@inject IModalService ModalService
+
+<div>
+    <p>@Message</p>
+
+    <button @onclick="() => ModalInstance.Cancel()" class="btn btn-outline-primary">OK</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+}
