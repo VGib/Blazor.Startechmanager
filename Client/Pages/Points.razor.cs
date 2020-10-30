@@ -21,6 +21,10 @@ namespace Blazor.Startechmanager.Client.Pages
 
         [Inject]
         public HttpClient HttpClient { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
 #nullable enable
 
         public bool IsLoad { get; set; } = false;
@@ -50,6 +54,11 @@ namespace Blazor.Startechmanager.Client.Pages
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             InvokeAsync(StateHasChanged);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        }
+
+        public void CreateItem()
+        {
+            NavigationManager.NavigateTo($"/NewItem/{UserId}");
         }
     }
 }

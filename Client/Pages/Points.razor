@@ -7,10 +7,10 @@
 }
 else
 {
-    <div>
-        Name: @User?.UserName <br />
-        Number of points: @User?.NumberOfpoints <br />
-        Create: <NavLink href="@("/NewItem/" +  UserId.ToString() )" Match="NavLinkMatch.All" >Create new</NavLink>
-    </div>
+    <h3>Starpoints of @User.UserName</h3>
+    <div class="alert alert-primary my-3">Number of points: <span class="text-dark">@User?.NumberOfpoints</span></div>
+    <div class="d-flex flex-row justify-content-center col-12 mb-4" >
+    <button class="btn btn-outline-primary" style="width: 120px" @onclick="CreateItem" >Create</button>
+    </div >
     <StarpointTable Items="Items" />
 }
