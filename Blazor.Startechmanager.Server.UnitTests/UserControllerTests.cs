@@ -86,6 +86,15 @@ namespace Blazor.Startechmanager.Server.UnitTests
         }
 
         [Test]
+        public async Task GetUser_should_return_this_user_userObject_when_userId_is_current_user_id()
+        {
+            SetUser(User);
+            var target = Create();
+            var user = await target.GetUser(User.Id);
+            user.Id.Should().Be(User.Id);
+        }
+
+        [Test]
         public async Task GetUser_the_userId_users_object()
         {
             AuthorizeLeader();
