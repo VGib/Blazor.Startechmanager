@@ -46,10 +46,9 @@ namespace Blazor.Startechmanager.Server.Controllers
         public async Task<UserObject> GetUser(int userId)
         {
             ApplicationUser user;
-            var currrentUser = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User); ;
-            if (userId == ThisUser.Id)
+            if(userId == ThisUser.Id)
             {
-                user = currrentUser;
+                user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
 
                 if (user is null)
                 {
@@ -58,9 +57,9 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
             else
             {
-                user = await dbContext.Users.Include(x => x.Startechs).FirstOrDefaultAsync(x => x.Id == userId);
+                user =  await dbContext.Users.Include(x => x.Startechs).FirstOrDefaultAsync(x => x.Id == userId);
 
-                if ( currrentUser?.Id != user.Id && (!user?.Startechs.Any( x =>  CallerIsLeaderOf(x.Startech)) ?? false))
+                if(!user?.Startechs.Any( x =>  CallerIsLeaderOf(x.Startech)) ?? false)
                 {
                     throw new UserControllerException("you don't have the right to view this");
                 }
