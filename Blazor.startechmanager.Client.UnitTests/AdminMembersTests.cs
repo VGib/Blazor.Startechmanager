@@ -42,7 +42,9 @@ namespace Blazor.startechmanager.Client.UnitTests
         }
 
         [Test]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task should_load_startech_members_at_initialization()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
              .Respond("application/json", JsonSerializer.Serialize(new[] { new UserObject { Id = 12, UserName = "dotnet_Member" } }));

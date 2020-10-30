@@ -66,7 +66,7 @@ namespace Blazor.Startechmanager.Server.Controllers
         public async Task<IList<StarpointsItem>> GetInValidationStarpoints()
         {
             var startechs = FromUserToHisStartechs(await GetThisUser(returnOnlyStartechWhereUserIsLeader: true));
-            return await dbContext.StarpointsItem.Where(x => startechs.Contains(x.Startech) && x.ValidationState == ValidationState.InStudy).ToListAsync();
+            return await dbContext.StarpointsItem.Include(x => x.Type).Where(x => startechs.Contains(x.Startech) && x.ValidationState == ValidationState.InStudy).ToListAsync();
         }
 
         public async Task<IActionResult> CreateStarpoints([FromRoute] int userId, [FromBody] StarpointsItem itemToCreate)
@@ -168,7 +168,7 @@ namespace Blazor.Startechmanager.Server.Controllers
 
         private async Task<StarpointsItem> GetThisItem(int itemId)
         {
-            return await dbContext.StarpointsItem.FirstOrDefaultAsync(x => x.Id == itemId);
+            return await dbContext.StarpointsItem.Include(x => x.Type).FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
         public async Task<IActionResult> UpdateStarpoints([FromBody] StarpointsItem starpointToUpdate)
@@ -187,8 +187,9 @@ namespace Blazor.Startechmanager.Server.Controllers
 
             var thisUser = await GetThisUser(returnOnlyStartechWhereUserIsLeader: true);
 
-            bool isStartechLeader = thisUser.Id != inDatatabaseStarpointToUpdate.ApplicationUserId;
-            if (isStartechLeader && !IsStartechLeader(inDatatabaseStarpointToUpdate.Startech))
+            bool isCurrentUser = thisUser.Id != inDatatabaseStarpointToUpdate.ApplicationUserId;
+            bool isStartechLeader = IsStartechLeader(inDatatabaseStarpointToUpdate.Startech);
+            if (isCurrentUser && !isStartechLeader)
             {
                 return BadRequest("you don't have the right to do this");
             }
@@ -198,7 +199,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
            
 
-            if(isStartechLeader)
+            if(isCurrentUser)
             {
                 if(inDatatabaseStarpointToUpdate.NumberOfPoints != starpointToUpdate.NumberOfPoints && inDatatabaseStarpointToUpdate.ValidationState == ValidationState.Validated)
                 {
@@ -269,7 +270,9 @@ namespace Blazor.Startechmanager.Server.Controllers
             {
                 user.NumberOfPoints += numberOfPoints;
             }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             dbContext.Entry(user).Property(x => x.NumberOfPoints).IsModified = true;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         private async Task<StarpointsType> GetStarpointType(StarpointsType? type)

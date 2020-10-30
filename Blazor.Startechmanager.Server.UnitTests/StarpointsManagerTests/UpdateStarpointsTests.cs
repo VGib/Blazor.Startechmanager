@@ -94,6 +94,7 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
         public async Task UpdateStarpoints_current_user_can_only_update_his_starpoint_if_they_are_in_study_state()
         {
             SetUser(MemberDotnet);
+            UnauthorizeMember();
             const string updatedText = "updated!!";
             var starpointToUpdate = CreateItemToUpdate(state: ValidationState.Validated);
             var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.UrlJustification = updatedText);
@@ -107,6 +108,7 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
         public async Task UpdateStarpoints_current_user_can_only_update_his_starpoint_if_they_are_in_study_state_2()
         {
             SetUser(MemberDotnet);
+            UnauthorizeMember();
             const string updatedText = "updated!!";
             var starpointToUpdate = CreateItemToUpdate(state: ValidationState.Refused);
             var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.UrlJustification = updatedText);
@@ -128,6 +130,52 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
 
             result.Should().BeOfType<OkResult>();
         }
+
+        [Test]
+        public async Task UpdateStarpoints_current_user_which_is_leader_can_update_his_starpoint_even_if_theyare_not_in_study_state()
+        {
+            SetUser(LeaderDotnet);
+            AuthorizeLeader();
+            const string updatedText = "updated!!";
+            var starpointToUpdate = CreateItemToUpdate(state: ValidationState.Validated, userId: LeaderDotnet.Id);
+            var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.TextJustification = updatedText);
+            var target = Create();
+            var result = await target.UpdateStarpoints(inputStarpoint);
+
+            var updatedStarpoint = DbContext.StarpointsItem.FirstOrDefault(x => x.Id == WorkingStarpointItemId);
+            updatedStarpoint.TextJustification.Should().Be(updatedText);
+        }
+
+        [Test]
+        public async Task UpdateStarpoints_current_user_which_is_leader_can_update_his_starpoint_even_if_theyare_not_in_study_state_2()
+        {
+            SetUser(LeaderDotnet);
+            AuthorizeLeader();
+            const string updatedText = "updated!!";
+            var starpointToUpdate = CreateItemToUpdate(state: ValidationState.Refused, userId: LeaderDotnet.Id);
+            var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.TextJustification = updatedText);
+            var target = Create();
+            var result = await target.UpdateStarpoints(inputStarpoint);
+
+            var updatedStarpoint = DbContext.StarpointsItem.FirstOrDefault(x => x.Id == WorkingStarpointItemId);
+            updatedStarpoint.TextJustification.Should().Be(updatedText);
+        }
+
+        [Test]
+        public async Task UpdateStarpoints_current_user_which_is_leader_can_update_his_starpoint_even_if_theyare_not_in_study_state_3()
+        {
+            SetUser(LeaderDotnet);
+            AuthorizeLeader();
+            const string updatedText = "updated!!";
+            var starpointToUpdate = CreateItemToUpdate(state: ValidationState.InStudy, userId: LeaderDotnet.Id);
+            var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.TextJustification = updatedText);
+            var target = Create();
+            var result = await target.UpdateStarpoints(inputStarpoint);
+
+            var updatedStarpoint = DbContext.StarpointsItem.FirstOrDefault(x => x.Id == WorkingStarpointItemId);
+            updatedStarpoint.TextJustification.Should().Be(updatedText);
+        }
+
 
         [Test]
         public async Task UpdateStarpoints_current_user_can_update_his_starpoint_even_if_his_not_startech_member_anymore()

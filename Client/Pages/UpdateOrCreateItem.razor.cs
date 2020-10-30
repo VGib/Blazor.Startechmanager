@@ -128,6 +128,7 @@ namespace Blazor.Startechmanager.Client.Pages
             Item = await HttpClient.GetFromJsonAsync<StarpointsItem>($"StarpointsManager/GetItem/-1/{itemId}");
             User = await GetUser(Item.ApplicationUserId);
             await LoadItemTypes();
+            await LoadUsersStartechs();
             IsLoad = true;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             InvokeAsync(StateHasChanged);

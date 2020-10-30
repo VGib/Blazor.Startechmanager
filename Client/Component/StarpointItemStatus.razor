@@ -5,6 +5,7 @@
         {
             <div class="text-warning">
                 <span class="oi oi-cog mr-2" />In Study (
+                <button class="btn btn-outline-primary mx-2" @onclick="UpdateItem" >update</button>
                 <button class="btn btn-outline-success mx-2" @onclick="() => UpdateState(ValidationState.Validated)"><span class="oi oi-check mr-2" />validate</button>
                 <button class="btn btn-outline-danger mx-2" @onclick="() => UpdateState(ValidationState.Refused)"><span class="oi oi-x mr-2" />refuse</button>
                 <button class="btn btn-outline-danger mx-2" @onclick="CancelItem"><span class="oi oi-ban mr-2" />suppress</button>)
@@ -13,17 +14,22 @@
         }
         else
         {
-            <div class="text-warning"><span class="oi oi-cog mr-2" />In Study (<button class="btn btn-outline-danger mx-2" @onclick="CancelItem"><span class="oi oi-ban mr-2" />suppress</button>)</div>
+<div class="text-warning">
+    <span class="oi oi-cog mr-2" />In Study (
+    <button class="btn btn-outline-primary mx-2" @onclick="UpdateItem">update</button>
+    <button class="btn btn-outline-danger mx-2" @onclick="CancelItem"><span class="oi oi-ban mr-2" />suppress</button>)
+</div>
         }
         break;
     case ValidationState.Refused:
         @if (IsLeaderOfItemStartech)
         {
-            <div class="text-danger">
-                <span class="oi oi-x mr-2" />Refused (
-                <button class="btn btn-outline-warning mx-2" @onclick="() => UpdateState(ValidationState.InStudy)"><span class="oi oi-cog mr-2" />in study</button>
-                ) 
-            </div>
+<div class="text-danger">
+    <span class="oi oi-x mr-2" />Refused (
+    <button class="btn btn-outline-primary mx-2" @onclick="UpdateItem">update</button>
+    <button class="btn btn-outline-warning mx-2" @onclick="() => UpdateState(ValidationState.InStudy)"><span class="oi oi-cog mr-2" />in study</button>
+    )
+</div>
         }
         else
         {
@@ -33,11 +39,12 @@
     case ValidationState.Validated:
         @if (IsLeaderOfItemStartech)
         {
-            <div class="text-success">
-                <span class="oi oi-check mr-2" />Validated (
-                <button class="btn btn-outline-warning mx-2" @onclick="() => UpdateState(ValidationState.InStudy)"><span class="oi oi-cog mr-2" />in study</button>
-                )
-            </div>
+<div class="text-success">
+    <span class="oi oi-check mr-2" />Validated (
+    <button class="btn btn-outline-primary mx-2" @onclick="UpdateItem">update</button>
+    <button class="btn btn-outline-warning mx-2" @onclick="() => UpdateState(ValidationState.InStudy)"><span class="oi oi-cog mr-2" />in study</button>
+    )
+</div>
         }
         else
         {

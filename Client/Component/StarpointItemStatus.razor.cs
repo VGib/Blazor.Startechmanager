@@ -31,7 +31,10 @@ namespace Blazor.Startechmanager.Client.Component
         public IMessageDisplayer MessageDisplayer { get; set; }
 
         [Inject]
-        public IConfirmDisplayer ConfirmDisplayer { get; set; }      
+        public IConfirmDisplayer ConfirmDisplayer { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
 #nullable enable
 
@@ -67,6 +70,11 @@ namespace Blazor.Startechmanager.Client.Component
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
             }
+        }
+
+        public void UpdateItem()
+        {
+            NavigationManager.NavigateTo($"/UpdateItem/{Item.Id}");
         }
     }
 }

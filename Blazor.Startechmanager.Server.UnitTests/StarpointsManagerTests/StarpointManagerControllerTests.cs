@@ -50,6 +50,13 @@ namespace Blazor.Startechmanager.Server.UnitTests
         {
             AuthorizationService.Setup(x => x.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), It.IsIn(StartechPolicyHelper.AllStartechLeader)))
                 .Returns(Task.Factory.StartNew(() => AuthorizationResult.Failed()));
+            foreach (var startech in Enum.GetValues(typeof(Startechs)).Cast<Startechs>())
+            {
+                var ThisLoopPolicy = StartechPolicyHelper.GetPolicyName(startech, MustBeLeader: true);
+                AuthorizationService.Setup(x => x.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), It.IsIn(ThisLoopPolicy)))
+                    .Returns(Task.Factory.StartNew(() => AuthorizationResult.Failed()));
+            }
+
         }
 
         protected readonly StarpointsType BlogArticle = new StarpointsType
