@@ -1,0 +1,33 @@
+﻿@using BlazorTable
+<Table TableItem="StarpointsItem" Items="Items" PageSize="100">
+    <Column TableItem="StarpointsItem" Field="@(x => x.Date)" Format="d" Sortable="true" Filterable="true" Title="Date"></Column>
+    <Column TableItem="StarpointsItem" Field="@(x => x.Startech)" Sortable="true" Filterable="true" Title="Startech"></Column>
+    <Column TableItem="StarpointsItem" Field="@(x => x.StarpointsTypeId)" Title="Type">
+        <Template>
+            @context.Type?.TypeName
+        </Template>
+    </Column>
+    <Column TableItem="StarpointsItem" Title="Justification">
+        <Template>
+            <StarpointItemJustification Item="context" />
+        </Template>
+    </Column>
+    <Column TableItem="StarpointsItem" Field="@(x => x.ValidationState)" Sortable="true" Filterable="true" Title="status">
+        <Template>
+            <StarpointItemStatus Item="context" PleaseRemoveItem="DeleteItem" />
+        </Template>
+    </Column>
+    <Column TableItem="StarpointsItem" Field="(x => x.NumberOfPoints)" Sortable="true" Filterable="true" Title="Points"></Column>
+</Table>
+@code {
+
+    [Parameter]
+    public IList<StarpointsItem> Items { get; set; }
+
+
+    public void DeleteItem(StarpointsItem item)
+    {
+        Items.Remove(item);
+        InvokeAsync(StateHasChanged);
+    }
+}

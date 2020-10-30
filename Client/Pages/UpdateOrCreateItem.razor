@@ -33,6 +33,8 @@ else
               <ValidationMessage For="@(() => Item.Startech)" />
                 </div>
             }
+        @if (IsNew || IsLeader)
+        {
     <div class="form-group">
         <label>Type: </label><select value="@(Item.Type?.Id ?? 0)" @onchange="OnTypeChanged" class="form-control">
             @if (IsLeader)
@@ -46,6 +48,7 @@ else
         </select>
         <ValidationMessage For="@(() => Item.Type)" />
     </div>
+        }
     <div class="form-group">
         <label>Url Justification:</label>
         <input @bind="Item.UrlJustification" class="form-control" />
