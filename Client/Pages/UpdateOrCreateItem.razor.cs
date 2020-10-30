@@ -126,7 +126,16 @@ namespace Blazor.Startechmanager.Client.Pages
         private async Task LoadForUpdateItem(int itemId)
         {
             Item = await HttpClient.GetFromJsonAsync<StarpointsItem>($"StarpointsManager/GetItem/-1/{itemId}");
-            User = await GetUser(Item.ApplicationUserId);
+            var thisUser = await GetUser(ThisUser.Id);
+            if (thisUser.Id == Item.ApplicationUserId)
+            {
+                UserId = ThisUser.Id;
+                User = thisUser;
+            }
+            else
+            {
+                User = await GetUser(Item.ApplicationUserId);
+            }
             await LoadItemTypes();
             await LoadUsersStartechs();
             IsLoad = true;
