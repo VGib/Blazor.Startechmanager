@@ -14,7 +14,7 @@
         <li class="nav-item px-3">
             <AuthorizeView Policy="@Roles.Admin">
                 <NavLink class="nav-link" href="/leaders" Match="NavLinkMatch.All">
-                    <span class="oi oi-people mr-2" aria-hidden="true" />Set up leaders
+                    <span class="oi oi-person mr-2" aria-hidden="true" />Set up leaders
                 </NavLink>
             </AuthorizeView></li>
         <AuthorizeView Policy="@StartechPolicyHelper.AllStartechLeader">
@@ -26,7 +26,7 @@
                     <AuthorizeView Policy="@StartechPolicyHelper.GetPolicyName(startech, true)" Context="smlqs">
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="@($"/members/{startech}")" Match="NavLinkMatch.All">
-                        <span class="oi oi-home mr-2" aria-hidden="true" />Leader @startech area
+                        <span class="oi oi-people mr-2" aria-hidden="true" />Leader @startech area
                     </NavLink>
                 </li>
             </AuthorizeView>
