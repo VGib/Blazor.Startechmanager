@@ -199,7 +199,7 @@ namespace Blazor.Startechmanager.Server.Controllers
             }
            
 
-            if(isCurrentUser)
+            if(isStartechLeader)
             {
                 if(inDatatabaseStarpointToUpdate.NumberOfPoints != starpointToUpdate.NumberOfPoints && inDatatabaseStarpointToUpdate.ValidationState == ValidationState.Validated)
                 {
