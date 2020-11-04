@@ -176,7 +176,6 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
             updatedStarpoint.TextJustification.Should().Be(updatedText);
         }
 
-
         [Test]
         public async Task UpdateStarpoints_current_user_can_update_his_starpoint_even_if_his_not_startech_member_anymore()
         {
@@ -203,7 +202,6 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
             updatedStarpointItem.ValidationState.Should().Be(ValidationState.InStudy);
         }
 
-
         [Test]
         public async Task UpdateStarpoints_leader_can_not_modify_starpoint_validation_status()
         {
@@ -215,7 +213,6 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
             var result = await target.UpdateStarpoints(inputStarpoint);
             var updatedStarpoint = GetUpdatedStarpoint();
             updatedStarpoint.ValidationState.Should().Be(ValidationState.Validated);
-            
         }
 
         [Test]
@@ -319,7 +316,6 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
             updatedStarpoint.Date.Should().BeCloseTo(DateTime.Now, precision: 20000);
         }
 
-
         [Test]
         public async Task UpdateStarpoints_updates_the_starpoints_in_database()
         {
@@ -348,11 +344,11 @@ namespace Blazor.Startechmanager.Server.UnitTests.StarpointsManagerTests
             updatedStarpoint.StarpointsTypeId.Should().Be(Presentation.Id);
         }
 
-
         [Test]
         public async Task UpdateStarpoints_member_can_not_modify_the_starpoint_type()
         {
             SetUser(MemberDotnet);
+            UnauthorizeMember();
             var starpointToUpdate = CreateItemToUpdate();
             var inputStarpoint = CreateInputStarpoint(starpointToUpdate, x => x.Type = Presentation);
             var target = Create();
