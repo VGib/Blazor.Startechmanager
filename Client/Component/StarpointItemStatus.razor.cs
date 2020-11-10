@@ -1,11 +1,7 @@
 ﻿using Blazor.Startechmanager.Client.Helpers;
-using Blazor.Startechmanager.Client.Pages;
 using Blazor.Startechmanager.Client.Services;
 using Blazor.Startechmanager.Shared.Models;
-using Blazored.Modal;
-using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
