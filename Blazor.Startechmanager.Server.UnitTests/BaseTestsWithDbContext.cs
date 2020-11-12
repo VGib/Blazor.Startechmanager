@@ -1,6 +1,5 @@
 ﻿using Blazor.Startechmanager.Server.Data;
 using Common.UnitTests;
-using EntityFrameworkCore.Testing.Moq.Helpers;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,11 +21,15 @@ namespace Blazor.Startechmanager.Server.UnitTests
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddEntityFrameworkInMemoryDatabase();
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            DbContext = new MockedDbContextBuilder<ApplicationDbContext>().UseConstructorWithParameters(
-                new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .UseInternalServiceProvider(serviceProvider).EnableServiceProviderCaching(false).Options,
-                new OptionsWrapper<OperationalStoreOptions>(new OperationalStoreOptions()))
-                .MockedDbContext;
+            //DbContext = new MockedDbContextBuilder<ApplicationDbContext>().UseConstructorWithParameters(
+            //    new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString())
+            //    .UseInternalServiceProvider(serviceProvider).EnableServiceProviderCaching(false).Options,
+            //    new OptionsWrapper<OperationalStoreOptions>(new OperationalStoreOptions()))
+            //    .MockedDbContext;
+            DbContext = new ApplicationDbContext(
+    new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString())
+    .UseInternalServiceProvider(serviceProvider).EnableServiceProviderCaching(false).Options,
+    new OptionsWrapper<OperationalStoreOptions>(new OperationalStoreOptions()));
             ServiceCollection.AddSingleton(_ => DbContext);
         }
     }
