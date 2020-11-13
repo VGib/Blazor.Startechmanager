@@ -1,15 +1,11 @@
-﻿using AngleSharp;
-using Bunit;
-using Bunit.Rendering;
-using Bunit.TestDoubles.JSInterop;
+﻿using Bunit;
+using Bunit.TestDoubles;
 using Common.UnitTests;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using System;
-using System.Linq;
 using System.Net.Http;
 
 namespace Blazor.startechmanager.Client.UnitTests
@@ -60,7 +56,6 @@ namespace Blazor.startechmanager.Client.UnitTests
                 testContext.Services.Add(serviceDescription);
             }
             testContext.Services.AddMockJSRuntime();
-
             return testContext.RenderComponent<T>(parameters);
         }
     }

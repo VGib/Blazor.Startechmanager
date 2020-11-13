@@ -4,8 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="bunit.core" Version="1.0.0-beta-9" />
-    <PackageReference Include="bunit.web" Version="1.0.0-beta-9" />
+    <PackageReference Include="bunit.core" Version="1.0.0-beta-11" />
+    <PackageReference Include="bunit.web" Version="1.0.0-beta-11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.0" />
     <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
         <PackageReference Include="FluentAssertions" Version="5.10.3" />

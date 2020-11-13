@@ -1,13 +1,8 @@
 ﻿using Blazor.Startechmanager.Client.Component;
 using Blazor.Startechmanager.Shared.Models;
 using Bunit;
-using Bunit.Rendering;
-using Bunit.TestDoubles.JSInterop;
 using FluentAssertions;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Blazor.startechmanager.Client.UnitTests
