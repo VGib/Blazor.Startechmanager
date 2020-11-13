@@ -1,8 +1,6 @@
 ﻿using Blazor.Startechmanager.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,12 +21,14 @@ namespace Blazor.Startechmanager.Client.Pages
         protected override void OnInitialized()
         {
             base.OnInitialized();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Load();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
             public async Task Load()
         {
-            Items = await HttpClient.GetFromJsonAsync<List<StarpointsItem>>($"StarpointsManager/GetInValidationStarpoints");
+            Items = await HttpClient.GetFromJsonAsync<List<StarpointsItem>>("StarpointsManager/GetInValidationStarpoints");
 
             IsLoad = true;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
