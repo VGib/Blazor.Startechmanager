@@ -156,7 +156,7 @@ namespace Blazor.Startechmanager.Client.Pages
             Item.NumberOfPoints = Item.Type?.NumberOfPoint ?? 0;
         }
 
-        public async void UpdateOrCreate()
+        public async Task UpdateOrCreate()
         {
             var userId = IsLeader ? User.Id : ThisUser.Id;
             if(IsNew)
