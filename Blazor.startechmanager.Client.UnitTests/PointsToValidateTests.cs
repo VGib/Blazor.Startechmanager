@@ -23,7 +23,7 @@ namespace Blazor.startechmanager.Client.UnitTests
         public async Task the_points_to_validate_should_be_load()
         {
             MockHttp.Expect(HttpMethod.Get, "http://localhost/StarpointsManager/GetInValidationStarpoints")
-                    .Respond("application/json", JsonSerializer.Serialize(new[] { new StarpointsItem() }));
+                    .RespondValues(new[] { new StarpointsItem() });
             var target = CreateComponent();
             await Task.Delay(50);
             target.Instance.Items.Should().HaveCount(1);
@@ -33,7 +33,7 @@ namespace Blazor.startechmanager.Client.UnitTests
         public async Task when_the_points_to_validate_is_load_isLoad_should_be_true()
         {
             MockHttp.Expect(HttpMethod.Get, "http://localhost/StarpointsManager/GetInValidationStarpoints")
-                  .Respond("application/json", JsonSerializer.Serialize(new[] { new StarpointsItem() }));
+                  .RespondValues(new[] { new StarpointsItem() });
             var target = CreateComponent();
             await Task.Delay(50);
             target.Instance.IsLoad.Should().BeTrue();

@@ -35,7 +35,7 @@ namespace Blazor.startechmanager.Client.UnitTests
         public async Task should_load_startech_members_from_right_startech()
         {
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                    .Respond("application/json", JsonSerializer.Serialize(new[] { new UserObject { Id = 12, UserName = "dotnet_Member" } }));
+                    .RespondValues(new[] { new UserObject { Id = 12, UserName = "dotnet_Member" } });
             var target = CreateComponent(StartechType);
             await Task.Delay(30);
             MockHttp.VerifyNoOutstandingExpectation();
@@ -47,7 +47,7 @@ namespace Blazor.startechmanager.Client.UnitTests
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-             .Respond("application/json", JsonSerializer.Serialize(new[] { new UserObject { Id = 12, UserName = "dotnet_Member" } }));
+             .RespondValues(new[] { new UserObject { Id = 12, UserName = "dotnet_Member" } });
             var target = CreateComponent(StartechType);
             target.WaitForAssertion(() => target.Nodes.Any(x => x.NodeValue?.Contains("dotnet_Member") ?? false));
         }
@@ -57,13 +57,13 @@ namespace Blazor.startechmanager.Client.UnitTests
         {
             var userObjectToRemove = new UserObject { Id = 12, UserName = "dotnet_Member" };
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                .Respond("application/json", JsonSerializer.Serialize(new[] { userObjectToRemove}));
+                .RespondValues(new[] { userObjectToRemove});
             var target = CreateComponent(StartechType);
             await Task.Delay(30);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/RemoveMember/12")
  .Respond(HttpStatusCode.OK);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
- .Respond("application/json", JsonSerializer.Serialize(new object[0]));
+ .RespondValues(new object[0]);
             await target.Instance.Remove(userObjectToRemove);
             MockHttp.VerifyNoOutstandingExpectation();
 
@@ -74,13 +74,13 @@ namespace Blazor.startechmanager.Client.UnitTests
         {
             var userObjectToAdd = new UserObject { Id = 12, UserName = "dotnet_Member" };
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                .Respond("application/json", JsonSerializer.Serialize(new object [0]));
+                .RespondValues(new object [0]);
             var target = CreateComponent(StartechType);
             await Task.Delay(30);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/SetMember/12")
                     .Respond(HttpStatusCode.OK);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                     .Respond("application/json", JsonSerializer.Serialize(new[] { userObjectToAdd }));
+                     .RespondValues(new[] { userObjectToAdd });
             await target.Instance.Add(userObjectToAdd);
             MockHttp.VerifyNoOutstandingExpectation();
         }
@@ -90,13 +90,13 @@ namespace Blazor.startechmanager.Client.UnitTests
         {
             var userObjectToAdd = new UserObject { Id = 12, UserName = "dotnet_Member" };
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                .Respond("application/json", JsonSerializer.Serialize(new object[0]));
+                .RespondValues(new object[0]);
             var target = CreateComponent(StartechType);
             await Task.Delay(30);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/SetMember/12")
  .Respond(HttpStatusCode.OK);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
- .Respond("application/json", JsonSerializer.Serialize(new[] { userObjectToAdd }));
+ .RespondValues(new[] { userObjectToAdd });
             await target.Instance.Add(userObjectToAdd);
             target.WaitForAssertion(() => target.Nodes.Any(x => x.NodeValue?.Contains("dotnet_Member") ?? false));
         }
@@ -106,13 +106,13 @@ namespace Blazor.startechmanager.Client.UnitTests
         {
             var userObjectToRemove = new UserObject { Id = 12, UserName = "dotnet_Member" };
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-                .Respond("application/json", JsonSerializer.Serialize(new[] { userObjectToRemove }));
+                .RespondValues(new[] { userObjectToRemove });
             var target = CreateComponent(StartechType);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/RemoveMember/12")
  .Respond(HttpStatusCode.OK);
             await Task.Delay(30);
             MockHttp.Expect(HttpMethod.Get, "http://localhost/AdminMember/Dotnet/GetMembers")
-             .Respond("application/json", JsonSerializer.Serialize(new object[0]));
+             .RespondValues(new object[0]);
             await target.Instance.Remove(userObjectToRemove);
             target.WaitForAssertion(() => target.Nodes.All(x => (x.NodeValue?.Contains("dotnet_Member") ?? false)));
         }

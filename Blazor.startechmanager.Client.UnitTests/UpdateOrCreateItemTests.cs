@@ -34,13 +34,13 @@ namespace Blazor.startechmanager.Client.UnitTests
         {
             int userId = (int)userIdParameter.Value;
             MockHttp.Expect(HttpMethod.Get, $"http://localhost/User/GetUser/{userIdParameter}")
-                .Respond("application/json", JsonSerializer.Serialize(new UserObject { Id = userId == ThisUser.Id ? ThisUserDatabaseId : userId, UserName = "User" }));
+                .RespondValues(new UserObject { Id = userId == ThisUser.Id ? ThisUserDatabaseId : userId, UserName = "User" });
             MockHttp.Expect(HttpMethod.Get, "http://localhost/StarpointsManager/GetStarpointsType/-1")
-                .Respond("application/json", JsonSerializer.Serialize(new[] { new StarpointsType { Id = 1 } }));
+                .RespondValues(new[] { new StarpointsType { Id = 1 } });
             if(userId != ThisUser.Id)
             {
                 MockHttp.Expect(HttpMethod.Get, $"http://localhost/User/GetUserStartechs/{userId}")
-                    .Respond("application/json", JsonSerializer.Serialize( new[] { Startechs.Dotnet }));
+                    .RespondValues( new[] { Startechs.Dotnet });
             }
         }
 
