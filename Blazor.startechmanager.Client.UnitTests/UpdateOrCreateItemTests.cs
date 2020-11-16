@@ -1,21 +1,48 @@
 ﻿using Blazor.Startechmanager.Client.Pages;
+using Blazor.Startechmanager.Shared.Constants;
+using Blazor.Startechmanager.Shared.Models;
+using Bunit;
+using FluentAssertions;
 using NUnit.Framework;
+using RichardSzalay.MockHttp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Blazor.startechmanager.Client.UnitTests
 {
     public class UpdateOrCreateItemTests : BaseTestsForComponent<UpdateOrCreateItem>
     {
+        public ComponentParameter ThisuserId { get; set; } = ComponentParameterFactory.Parameter("UserId", ThisUser.Id);
+
+        public int ThisUserDatabaseId { get; set; } = 19;
+
         [Test]
         public async Task for_new_item_a_new_StarpointItem_should_be_created()
         {
-            throw new NotImplementedException("to do");
+            InitializeHttpCallNewItem(ThisuserId);
+            var target = CreateComponent(ThisuserId);
+            await Task.Delay(30);
+            target.Instance.Item.Should().NotBeNull();
         }
 
+        private void InitializeHttpCallNewItem(ComponentParameter userIdParameter)
+        {
+            int userId = (int)userIdParameter.Value;
+            MockHttp.Expect(HttpMethod.Get, $"http://localhost/User/GetUser/{userIdParameter}")
+                .Respond("application/json", JsonSerializer.Serialize(new UserObject { Id = userId == ThisUser.Id ? ThisUserDatabaseId : userId, UserName = "User" }));
+            MockHttp.Expect(HttpMethod.Get, "http://localhost/StarpointsManager/GetStarpointsType/-1")
+                .Respond("application/json", JsonSerializer.Serialize(new[] { new StarpointsType { Id = 1 } }));
+            if(userId != ThisUser.Id)
+            {
+                MockHttp.Expect(HttpMethod.Get, $"http://localhost/User/GetUserStartechs/{userId}")
+                    .Respond("application/json", JsonSerializer.Serialize( new[] { Startechs.Dotnet }));
+            }
+        }
 
         [Test]
         public async Task for_new_item_created_by_this_user_a_new_StarpointItem_should_be_created_with_current_users_true_id()
